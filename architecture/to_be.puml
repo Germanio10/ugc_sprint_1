@@ -1,0 +1,60 @@
+@startuml
+!theme materia
+
+title  АРХИТЕКТУРА ТO BE
+
+agent Админ
+agent Клиент
+cloud "NGINX ADMIN" as nginx_admin
+cloud "NGINX AUTH" as auth_nginx
+cloud "NGINX FILM" as film_nginx
+cloud "NGINX FILM" as film_nginx
+cloud "NGINX UGC" as ugc_nginx
+
+Админ --> nginx_admin: CRUD контента
+Админ --> auth_nginx:  Создание роли для пользователя
+Клиент --> auth_nginx:  Авторизация, Pегистрация
+Клиент --> film_nginx:  Запрос контента
+Клиент --> ugc_nginx:  Аналитические запросы пользователя
+
+
+node "Admin service" as admin_service {
+    component Django
+    database Postgres as pg_admin
+    Django <--> pg_admin
+}
+
+node "Auth service" as auth_service {
+    component "Auth API" as auth_api
+    database Postgres as pg_auth
+    database Redis
+    auth_api <--> pg_auth
+    auth_api <--> Redis
+}
+
+node "Film service" as film_service {
+    component "Async API" as async_api
+    database Elastic
+    database Redis as redis_film
+    async_api <--> Elastic
+    async_api <--> redis_film
+}
+node "UGC service" as  ugc_service {
+    component "UGC API" as ugc_api
+    database "Apache Kafka (OLTP DB)" as kafka
+    component "ETL" as ugc_etl
+    database "ClickHouse (OLAP DB)" as click_house
+    ugc_api --> kafka:  "Отправка событий"
+    kafka --> ugc_etl:  "PULL событий"
+    ugc_etl --> click_house:  "загрузка событий"
+}
+component "ETL" as etl_films
+    pg_admin --> etl_films
+    etl_films --> Elastic
+
+nginx_admin --> Django
+auth_nginx --> auth_api
+film_nginx --> async_api
+ugc_nginx --> ugc_api
+async_api --> ugc_nginx
+@enduml
