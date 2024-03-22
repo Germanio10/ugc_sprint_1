@@ -46,7 +46,7 @@ node "UGC service" as  ugc_service {
     database "ClickHouse (OLAP DB)" as click_house
     ugc_api --> kafka:  "Отправка событий"
     kafka --> ugc_etl:  "PULL событий"
-    ugc_etl <-- click_house:  "загрузка событий"
+    ugc_etl --> click_house:  "загрузка событий"
 }
 component "ETL" as etl_films
     pg_admin --> etl_films
