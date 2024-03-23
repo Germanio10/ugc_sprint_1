@@ -77,6 +77,17 @@ services:
       - KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS=kafka-0:9092
       - KAFKA_CLUSTERS_0_NAME=kraft
 
+  etl:
+    build: ./etl
+    container_name: etl
+    env_file:
+      - .env
+    depends_on:
+      - kafka-0
+      - kafka-1
+      - kafka-2
+      - clickhouse-node1
+
   zookeeper:
     image: zookeeper:3.8
     container_name: zookeeper

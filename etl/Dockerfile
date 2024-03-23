@@ -6,13 +6,13 @@ RUN apk update && \
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     LANG=C.UTF-8 \
-    APP_HOME=/src/api
+    APP_HOME=/src/etl
 
 WORKDIR $APP_HOME
 
 ARG GID=1000
 ARG UID=1000
-ARG USER=ugc_api
+ARG USER=etl
 RUN addgroup -g $GID -S $USER  \
     && adduser -S $USER -G $USER --disabled-password --uid "$UID"
 

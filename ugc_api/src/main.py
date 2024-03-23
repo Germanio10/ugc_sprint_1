@@ -10,7 +10,7 @@ from client_kafka import create_topics
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # create_topics()
+    create_topics()
     yield
 
 
