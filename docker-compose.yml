@@ -79,7 +79,7 @@ services:
 
   etl:
     build: ./etl
-    container_name: etl
+    container_name: ugc_etl
     env_file:
       - .env
     depends_on:
