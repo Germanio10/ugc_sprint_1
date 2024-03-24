@@ -1,0 +1,40 @@
+@startuml
+!theme materia
+
+title  АРХИТЕКТУРA AS_IS
+
+agent Админ
+agent Клиент
+
+node "Admin service" as admin_service {
+    component "Admin panel" as django
+    database "Movies relational DB" as movies_db
+    django <--> movies_db
+}
+
+node "Auth service" as auth_service {
+    component "Auth API" as auth_api
+    database "Auth relational DB" as auth_db
+    database "Auth cache storage" as cache_storage
+    auth_api <--> auth_db
+    auth_api <--> cache_storage
+}
+
+node "Film service" as film_service {
+    component "Film API" as film_api
+    database "Film search DB" as film_db
+    database "Film cache storage"  as cache_storage_film
+    film_api <--> film_db
+    film_api <--> cache_storage_film
+}
+
+component "ETL" as etl_films
+    movies_db <-- etl_films
+    etl_films --> film_db
+
+
+Админ --> django: CRUD контента
+Админ --> auth_api: Создание роли для пользователя
+Клиент --> auth_api:  Авторизация, Pегистрация
+Клиент --> film_api:  Запрос контента
+@enduml
