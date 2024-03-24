@@ -5,56 +5,48 @@ title  АРХИТЕКТУРА ТO BE
 
 agent Админ
 agent Клиент
-cloud "NGINX ADMIN" as nginx_admin
-cloud "NGINX AUTH" as auth_nginx
-cloud "NGINX FILM" as film_nginx
-cloud "NGINX FILM" as film_nginx
-cloud "NGINX UGC" as ugc_nginx
-
-Админ --> nginx_admin: CRUD контента
-Админ --> auth_nginx:  Создание роли для пользователя
-Клиент --> auth_nginx:  Авторизация, Pегистрация
-Клиент --> film_nginx:  Запрос контента
-Клиент --> ugc_nginx:  Аналитические запросы пользователя
-
+agent Аналитик
 
 node "Admin service" as admin_service {
-    component Django
-    database Postgres as pg_admin
-    Django <--> pg_admin
+    component "Admin panel" as django
+    database "Movies relational DB" as movies_db
+    django <--> movies_db
 }
 
 node "Auth service" as auth_service {
     component "Auth API" as auth_api
-    database Postgres as pg_auth
-    database Redis
-    auth_api <--> pg_auth
-    auth_api <--> Redis
+    database "Auth relational DB" as auth_db
+    database "Auth cache storage" as cache_storage
+    auth_api <--> auth_db
+    auth_api <--> cache_storage
 }
 
 node "Film service" as film_service {
-    component "Async API" as async_api
-    database Elastic
-    database Redis as redis_film
-    async_api <--> Elastic
-    async_api <--> redis_film
+    component "Film API" as film_api
+    database "Film search DB" as film_db
+    database "Film cache storage"  as cache_storage_film
+    film_api <--> film_db
+    film_api <--> cache_storage_film
 }
+
+component "ETL" as etl_films
+    movies_db <-- etl_films
+    etl_films --> film_db
+
 node "UGC service" as  ugc_service {
     component "UGC API" as ugc_api
-    database "Apache Kafka (OLTP DB)" as kafka
+    database "Message broker" as msg_broker
     component "ETL" as ugc_etl
-    database "ClickHouse (OLAP DB)" as click_house
-    ugc_api --> kafka:  "Отправка событий"
-    kafka --> ugc_etl:  "PULL событий"
-    ugc_etl --> click_house:  "загрузка событий"
+    database "OLAP DB" as olap_db
+    ugc_api --> msg_broker:  "Отправка событий"
+    msg_broker <-- ugc_etl:  "PULL событий"
+    ugc_etl --> olap_db:  "Загрузка событий"
 }
-component "ETL" as etl_films
-    pg_admin --> etl_films
-    etl_films --> Elastic
 
-nginx_admin --> Django
-auth_nginx --> auth_api
-film_nginx --> async_api
-ugc_nginx --> ugc_api
-async_api --> ugc_nginx
+Админ --> django: CRUD контента
+Админ --> auth_api: Создание роли для пользователя
+Клиент --> auth_api:  Авторизация, Pегистрация
+Клиент --> film_api:  Запрос контента
+Клиент --> ugc_api:  Аналитические запросы пользователя
+Аналитик --> olap_db: Аналитические данные
 @enduml
