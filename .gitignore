@@ -2,3 +2,10 @@
 venv
 .env
 __pycache_
+poetry.lock
+
+*.pyc
+*.pyo
+
+.pytest_cache
+.mypy_cache
