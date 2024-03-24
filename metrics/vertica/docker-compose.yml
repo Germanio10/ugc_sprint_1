@@ -1,0 +1,9 @@
+version: '3.5'
+
+services:
+  vertica:
+    image: jbfavre/vertica:latest
+    ports:
+      - 5433:5433
+    volumes:
+      - ./data:/home/dbadmin/docker
