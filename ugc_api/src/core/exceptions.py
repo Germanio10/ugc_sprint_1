@@ -1,0 +1,2 @@
+class FilmNotFoundError(Exception):
+    pass

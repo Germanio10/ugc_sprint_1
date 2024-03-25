@@ -1,17 +1,28 @@
 from contextlib import asynccontextmanager
+from aiokafka import AIOKafkaProducer
 from fastapi.applications import FastAPI
 from fastapi.responses import ORJSONResponse
+from aiohttp import client
 import uvicorn
 
 from core.logger import LOGGING
 from core.config import settings
-from client_kafka import create_topics
+from api.v1 import events
+from db import kafka
+from clients import api_session, admin_client_kafka
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    create_topics()
+    admin_client_kafka.AdminClientKafka.create_topics(settings.kafka.topics)
+    api_session.session = client.ClientSession()
+    kafka.kafka = AIOKafkaProducer(bootstrap_servers=settings.kafka.kafka_hosts_as_list)
+
+    await kafka.kafka.start()
     yield
+    await kafka.kafka.stop()
+    await api_session.session.close()
+
 
 
 app = FastAPI(
@@ -23,6 +34,8 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+
+app.include_router(events.router, prefix='/api/v1', tags=['events'])
 
 if __name__ == '__main__':
     uvicorn.run(
