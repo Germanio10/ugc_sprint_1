@@ -16,7 +16,7 @@ class ProduceFilmQualitySevice(BaseService):
         self.topic = 'messages'
 
     async def execute(self, film_quality: FilmQualityEventDTO) -> FilmQualityProduceEventDTO:
-        path = f'/api/v1/films/{film_quality.film_id}'
+        path = f'/api/v1/films/{film_quality.film_id}/'
 
         try: 
             film = await self.api_client.get(path=path)

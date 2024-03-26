@@ -17,6 +17,7 @@ class KafkaSettings(BaseSettings):
 
 class Settings(BaseSettings):
     kafka: KafkaSettings = KafkaSettings()
+    films_api_base_url: str =Field(validation_alias='FILMS_API_BASE_URL', default='http://127.0.0.1:81')
     log_level: int | str = Field(validation_alias='LOG_LEVEL', default=logging.DEBUG)
 
 

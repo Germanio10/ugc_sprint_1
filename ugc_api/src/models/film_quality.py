@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class Genre(BaseModel):
-    uuid: UUID
+    id: UUID
     name: str
 
 

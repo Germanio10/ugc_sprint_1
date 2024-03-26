@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException
 from pydantic import BaseModel
 
 from clients.api_session import get_api_session
-from core import exceptions
+from core.config import settings
 
 
 class ApiResponse(BaseModel):
@@ -31,4 +31,4 @@ class ApiClient:
 def get_api_client(
     session: aiohttp.ClientSession = Depends(get_api_session)
 ) -> ApiClient:
-    return ApiClient(base_url='http://127.0.0.1:9000', session=session)
+    return ApiClient(base_url=settings.films_api_base_url, session=session)
