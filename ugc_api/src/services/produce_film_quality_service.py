@@ -1,5 +1,6 @@
 from datetime import datetime
 from functools import lru_cache
+from uuid import UUID
 from fastapi import Depends, HTTPException
 from producers.abstract_producer import AbstractProducer
 from models.film_quality import FilmQualityEventDTO, FilmQualityProduceEventDTO
@@ -15,7 +16,7 @@ class ProduceFilmQualitySevice(BaseService):
         self.api_client = api_client
         self.topic = 'messages'
 
-    async def execute(self, film_quality: FilmQualityEventDTO) -> FilmQualityProduceEventDTO:
+    async def execute(self, film_quality: FilmQualityEventDTO, user_id: str) -> FilmQualityProduceEventDTO:
         path = f'/api/v1/films/{film_quality.film_id}/'
 
         try: 
@@ -24,6 +25,7 @@ class ProduceFilmQualitySevice(BaseService):
             raise exceptions.FilmNotFoundError
 
         film_quality = FilmQualityProduceEventDTO(
+            user_id=user_id,
             title=film['title'],
             imdb_rating=film['imdb_rating'],
             genre=film['genre'],

@@ -3,10 +3,11 @@ from aiokafka import AIOKafkaProducer
 from fastapi.applications import FastAPI
 from fastapi.responses import ORJSONResponse
 from aiohttp import client
+from async_fastapi_jwt_auth import AuthJWT
 import uvicorn
 
 from core.logger import LOGGING
-from core.config import settings
+from core.config import JWTSettings, settings
 from api.v1 import events
 from db import kafka
 from clients import api_session, admin_client_kafka
@@ -24,7 +25,6 @@ async def lifespan(app: FastAPI):
     await api_session.session.close()
 
 
-
 app = FastAPI(
     title='UGC сервис',
     docs_url='/api/openapi',
@@ -36,6 +36,13 @@ app = FastAPI(
 )
 
 app.include_router(events.router, prefix='/api/v1', tags=['events'])
+
+
+
+@AuthJWT.load_config
+def get_config():
+    return JWTSettings()
+
 
 if __name__ == '__main__':
     uvicorn.run(

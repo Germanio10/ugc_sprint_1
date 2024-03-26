@@ -1,9 +1,11 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException, Request
 from services.produce_film_quality_service import get_produce_film_quality_servece, ProduceFilmQualitySevice
 from models.film_quality import FilmQualityEventDTO, FilmQualityEventResponse
 from core import exceptions
+from models.user import User
+from utils.check_auth import CheckAuth
 
 router = APIRouter()
 
@@ -14,12 +16,14 @@ router = APIRouter()
              status_code=HTTPStatus.CREATED
              )
 async def produce_film_quality(
-    film_quality: FilmQualityEventDTO,
+    film_quality: FilmQualityEventDTO = Body(),
+    user: User = Depends(CheckAuth()),
     service: ProduceFilmQualitySevice = Depends(
-        get_produce_film_quality_servece)
-) -> dict:
+        get_produce_film_quality_servece),
+
+):
     try:
-        await service.execute(film_quality=film_quality)
+        await service.execute(film_quality=film_quality, user_id=user.user_id)
     except exceptions.FilmNotFoundError:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail='Фильм не был найден')
     return FilmQualityEventResponse(film_id=film_quality.film_id)

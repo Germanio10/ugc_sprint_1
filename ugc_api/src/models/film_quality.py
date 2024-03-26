@@ -15,7 +15,7 @@ class FilmQualityEventDTO(BaseModel):
 
 
 class FilmQualityProduceEventDTO(FilmQualityEventDTO):
-    # user_id: UUID
+    user_id: str
     title: str
     imdb_rating: float | None
     genre: list[Genre] | None
