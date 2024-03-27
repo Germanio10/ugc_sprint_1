@@ -19,9 +19,9 @@ class ApiClient:
         self.base_url = base_url
         self.session = session
 
-    async def get(self, path,  **kwargs) -> aiohttp.ClientResponse:
+    async def get(self, path, cookies, **kwargs) -> aiohttp.ClientResponse:
         url = f'{self.base_url}{path}'
-        async with self.session.get(url, params={**kwargs},) as response:
+        async with self.session.get(url, cookies=cookies, params={**kwargs},) as response:
             if response.status != HTTPStatus.OK:
                 raise HTTPException(status_code=response.status)
             return await response.json()

@@ -23,7 +23,7 @@ async def produce_film_quality(
 
 ):
     try:
-        await service.execute(film_quality=film_quality, user_id=user.user_id)
+        await service.execute(film_quality=film_quality, user=user)
     except exceptions.FilmNotFoundError:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail='Фильм не был найден')
     return FilmQualityEventResponse(film_id=film_quality.film_id)
