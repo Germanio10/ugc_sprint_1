@@ -1,6 +1,5 @@
 from datetime import datetime
 from functools import lru_cache
-from uuid import UUID
 from fastapi import Depends, HTTPException
 from producers.abstract_producer import AbstractProducer
 from models.film_quality import FilmQualityEventDTO, FilmQualityProduceEventDTO
