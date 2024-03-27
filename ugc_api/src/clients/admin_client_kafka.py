@@ -7,6 +7,7 @@ from core.config import settings
 
 logger = logging.getLogger(__name__)
 
+
 class AdminClientKafka:
 
     @staticmethod
@@ -24,6 +25,4 @@ class AdminClientKafka:
         except TopicAlreadyExistsError as err:
             logger.info('Топики уже существуют: {}'.format(err))
         except Exception as e:
-            logger.error('Ошибка создания топиков {}'.format(err))
-
-        
+            logger.error('Ошибка создания топиков {}'.format(e))

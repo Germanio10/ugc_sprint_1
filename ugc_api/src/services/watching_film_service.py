@@ -5,9 +5,10 @@ from clients.api_client import ApiClient, get_api_client
 from models.film_progress import FilmProgressEventDTO
 from fastapi import Depends, HTTPException
 from core import exceptions
-from models.film_quality import FilmQualityProduceEventDTO
+from models.film_progress import FilmProgressProduceEventDTO
 from functools import lru_cache
 from producers.kafka_producer import get_producer
+from models.user import User
 
 
 class WatchingFilmService(BaseService):
@@ -17,16 +18,16 @@ class WatchingFilmService(BaseService):
         self.api_client = api_client
         self.topic = 'messages'
 
-    async def execute(self, film_progress: FilmProgressEventDTO, user_id: str ) -> FilmQualityProduceEventDTO:
+    async def execute(self, film_progress: FilmProgressEventDTO, user: User) -> FilmProgressProduceEventDTO:
         path = f'/api/v1/films/{film_progress.film_id}/'
 
         try:
-            film = await self.api_client.get(path=path)
+            film = await self.api_client.get(path=path, cookies=user.cookies)
         except HTTPException:
             raise exceptions.FilmNotFoundError
 
-        film_progress = FilmQualityProduceEventDTO(
-            user_id=user_id,
+        film_progress = FilmProgressProduceEventDTO(
+            user_id=user.user_id,
             title=film['title'],
             imdb_rating=film['imdb_rating'],
             genre=film['genre'],

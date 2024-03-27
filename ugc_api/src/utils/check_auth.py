@@ -19,7 +19,7 @@ class CheckAuth(AuthJWT):
             await self.jwt_required()
             user_id = await self.get_jwt_subject()
             role_id = (await self.get_raw_jwt())["role_id"]
-            return User(user_id=user_id, role_id=role_id)
+            return User(user_id=user_id, role_id=role_id, cookies=self._request.cookies)
 
         except MissingTokenError:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User is not authorized")

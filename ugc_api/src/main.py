@@ -38,7 +38,6 @@ app = FastAPI(
 app.include_router(events.router, prefix='/api/v1', tags=['events'])
 
 
-
 @AuthJWT.load_config
 def get_config():
     return JWTSettings()

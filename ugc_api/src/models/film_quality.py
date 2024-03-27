@@ -24,11 +24,3 @@ class FilmQualityProduceEventDTO(FilmQualityEventDTO):
 
 class FilmQualityEventResponse(BaseModel):
     film_id: UUID
-
-
-
-
-
-    
-
-

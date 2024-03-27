@@ -7,24 +7,25 @@ from producers.kafka_producer import get_producer
 from services.base_service import BaseService
 from clients.api_client import ApiClient, get_api_client
 from core import exceptions
+from models.user import User
 
 
-class ProduceFilmQualitySevice(BaseService):
+class ProduceFilmQualityService(BaseService):
     def __init__(self, producer: AbstractProducer, api_client: ApiClient) -> None:
         self.producer = producer
         self.api_client = api_client
         self.topic = 'messages'
 
-    async def execute(self, film_quality: FilmQualityEventDTO, user_id: str) -> FilmQualityProduceEventDTO:
+    async def execute(self, film_quality: FilmQualityEventDTO, user: User) -> FilmQualityProduceEventDTO:
         path = f'/api/v1/films/{film_quality.film_id}/'
 
         try: 
-            film = await self.api_client.get(path=path)
+            film = await self.api_client.get(path=path, cookies=user.cookies)
         except HTTPException:
             raise exceptions.FilmNotFoundError
 
         film_quality = FilmQualityProduceEventDTO(
-            user_id=user_id,
+            user_id=user.user_id,
             title=film['title'],
             imdb_rating=film['imdb_rating'],
             genre=film['genre'],
@@ -43,5 +44,5 @@ class ProduceFilmQualitySevice(BaseService):
 def get_produce_film_quality_servece(
     producer: AbstractProducer = Depends(get_producer),
     api_client: ApiClient = Depends(get_api_client)
-) -> ProduceFilmQualitySevice:
-    return ProduceFilmQualitySevice(producer=producer, api_client=api_client)
+) -> ProduceFilmQualityService:
+    return ProduceFilmQualityService(producer=producer, api_client=api_client)

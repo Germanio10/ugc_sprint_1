@@ -16,5 +16,5 @@ class KafkaProducer(AbstractProducer):
 
 
 @lru_cache()
-def get_producer(poroducer: AIOKafkaProducer = Depends(get_kafka)) -> AbstractProducer:
-    return KafkaProducer(poroducer)
+def get_producer(producer: AIOKafkaProducer = Depends(get_kafka)) -> AbstractProducer:
+    return KafkaProducer(producer)

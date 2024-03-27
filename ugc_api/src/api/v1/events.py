@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Body, Depends, HTTPException, Request
-from services.produce_film_quality_service import get_produce_film_quality_servece, ProduceFilmQualitySevice
+from fastapi import APIRouter, Body, Depends, HTTPException
+from services.produce_film_quality_service import get_produce_film_quality_servece, ProduceFilmQualityService
 from services.watching_film_service import get_watching_film_service, WatchingFilmService
 from models.film_quality import FilmQualityEventDTO, FilmQualityEventResponse
 from models.film_progress import FilmProgressEventResponse, FilmProgressEventDTO
@@ -20,12 +20,12 @@ router = APIRouter()
 async def produce_film_quality(
     film_quality: FilmQualityEventDTO = Body(),
     user: User = Depends(CheckAuth()),
-    service: ProduceFilmQualitySevice = Depends(
+    service: ProduceFilmQualityService = Depends(
         get_produce_film_quality_servece),
 
 ):
     try:
-        await service.execute(film_quality=film_quality, user_id=user.user_id)
+        await service.execute(film_quality=film_quality, user=user)
     except exceptions.FilmNotFoundError:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail='Фильм не был найден')
     return FilmQualityEventResponse(film_id=film_quality.film_id)
@@ -42,7 +42,7 @@ async def watching_film_progress(
         service: WatchingFilmService = Depends(get_watching_film_service)
 ):
     try:
-        await service.execute(film_progress=film_progress, user_id=user.user_id)
+        await service.execute(film_progress=film_progress, user=user)
     except exceptions.FilmNotFoundError:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail='Фильм не был найден')
     return FilmProgressEventResponse(film_id=film_progress.film_id)
