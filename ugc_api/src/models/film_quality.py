@@ -10,17 +10,12 @@ class Genre(BaseModel):
 
 class FilmQualityEventDTO(BaseModel):
     film_id: UUID
+    film_title: str
     quality: int
     event_timestamp: datetime
 
 
 class FilmQualityProduceEventDTO(FilmQualityEventDTO):
     user_id: str
-    title: str
-    imdb_rating: float | None
-    genre: list[Genre] | None
     produce_timestamp: datetime
 
-
-class FilmQualityEventResponse(BaseModel):
-    film_id: UUID

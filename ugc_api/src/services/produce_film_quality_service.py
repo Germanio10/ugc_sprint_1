@@ -1,12 +1,11 @@
 from datetime import datetime
 from functools import lru_cache
-from fastapi import Depends, HTTPException
+from fastapi import Depends
 from producers.abstract_producer import AbstractProducer
 from models.film_quality import FilmQualityEventDTO, FilmQualityProduceEventDTO
 from producers.kafka_producer import get_producer
 from services.base_service import BaseService
 from clients.api_client import ApiClient, get_api_client
-from core import exceptions
 from models.user import User
 
 
@@ -17,23 +16,14 @@ class ProduceFilmQualityService(BaseService):
         self.topic = 'messages'
 
     async def execute(self, film_quality: FilmQualityEventDTO, user: User) -> FilmQualityProduceEventDTO:
-        path = f'/api/v1/films/{film_quality.film_id}/'
-
-        try: 
-            film = await self.api_client.get(path=path, cookies=user.cookies)
-        except HTTPException:
-            raise exceptions.FilmNotFoundError
-
+        
         film_quality = FilmQualityProduceEventDTO(
             user_id=user.user_id,
-            title=film['title'],
-            imdb_rating=film['imdb_rating'],
-            genre=film['genre'],
             produce_timestamp=datetime.now(),
             **film_quality.model_dump(),
         )
 
-        key = self._get_key(film_quality, exclude_fields=['genre', 'produce_timestamp',])
+        key = self._get_key('quality', film_quality, include_fields=['user_id', 'film_id', 'produce_timestamp',])
         message = self._get_message(film_quality)
         await self.producer.send(self.topic, key, message)
 

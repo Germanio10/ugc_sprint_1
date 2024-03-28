@@ -13,6 +13,3 @@ class ClickInfoProduceEventDTO(ClickInfoEventDTO):
     user_id: str
     produce_timestamp: datetime
 
-
-class ClickInfoResponse(BaseModel):
-    message: str
