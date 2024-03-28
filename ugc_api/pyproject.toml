@@ -14,6 +14,10 @@ gunicorn = "^21.2.0"
 kafka-python = "^2.0.2"
 backoff = "^2.2.1"
 python-dotenv = "^1.0.1"
+aiokafka = "^0.8.1"
+orjson = "^3.9.15"
+aiohttp = "^3.9.3"
+async-fastapi-jwt-auth = "^0.6.4"
 
 
 [build-system]

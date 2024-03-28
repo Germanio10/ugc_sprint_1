@@ -1,6 +1,6 @@
 import logging
 
-from pydantic import Field
+from pydantic import Field, BaseModel
 from pydantic_settings import BaseSettings
 
 
@@ -17,7 +17,15 @@ class KafkaSettings(BaseSettings):
 
 class Settings(BaseSettings):
     kafka: KafkaSettings = KafkaSettings()
+    films_api_base_url: str = Field(validation_alias='FILMS_API_BASE_URL', default='http://127.0.0.1:81')
     log_level: int | str = Field(validation_alias='LOG_LEVEL', default=logging.DEBUG)
 
 
 settings = Settings()
+
+
+class JWTSettings(BaseModel):
+    authjwt_secret_key: str = "secret"
+    authjwt_token_location: set = {"cookies"}
+    authjwt_cookie_secure: bool = False
+    authjwt_cookie_csrf_protect: bool = False
