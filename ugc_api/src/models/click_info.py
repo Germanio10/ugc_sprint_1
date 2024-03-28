@@ -5,7 +5,7 @@ from datetime import datetime
 class ClickInfoEventDTO(BaseModel):
     url: str
     click_time: datetime
-    time_on_page: str
+    time_on_page: int
     event_time: datetime
 
 

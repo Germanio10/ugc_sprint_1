@@ -7,7 +7,7 @@ from uuid import UUID
 class FilmProgressEventDTO(BaseModel):
     film_id: UUID
     film_title: str
-    watching_time: str
+    watching_time: int
     film_percentage: int
     event_timestamp: datetime
 
