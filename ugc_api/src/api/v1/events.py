@@ -3,9 +3,11 @@ from http import HTTPStatus
 from fastapi import APIRouter, Body, Depends
 from services.produce_film_quality_service import get_produce_film_quality_servece, ProduceFilmQualityService
 from services.watching_film_service import get_watching_film_service, WatchingFilmService
+from services.filter_service import get_search_filter_servece, SearchFilterSevice
 from services.click_tracking_service import get_click_tracking_service, ClickTrackingService
 from models.film_quality import FilmQualityEventDTO
 from models.film_progress import FilmProgressEventDTO
+from models.filter import FilterEventDTO
 from models.click_info import ClickInfoEventDTO
 from models.user import User
 from models.response_message import ResponseMessage
@@ -57,4 +59,18 @@ async def click_tracking(
         service: ClickTrackingService = Depends(get_click_tracking_service)
 ):
     await service.execute(click_info=click_info, user=user)
+    return ResponseMessage(message=MESSAGE)
+
+
+@router.post('/search_filter/',
+             response_model=ResponseMessage,
+             description="Фильтры, используемые в поиске",
+             status_code=HTTPStatus.CREATED
+             )
+async def process_search_filter(
+    search_filter: FilterEventDTO = Body(),
+    user: User = Depends(CheckAuth()),
+    service: SearchFilterSevice = Depends(get_search_filter_servece)
+):
+    await service.execute(search_filter=search_filter, user=user)
     return ResponseMessage(message=MESSAGE)
