@@ -16,7 +16,7 @@ def connect_clickhouse(client: Client):
 
 
 if __name__ == "__main__":
-    host = os.getenv("CLICKHOUSE_HOST")
+    host = os.getenv("CLICKHOUSE_MAIN_HOST")
     port = os.getenv("CLICKHOUSE_PORT")
 
     client = Client(host=host, port=port)

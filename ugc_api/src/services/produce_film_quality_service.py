@@ -23,7 +23,7 @@ class ProduceFilmQualityService(BaseService):
             **film_quality.model_dump(),
         )
 
-        key = self._get_key('quality', film_quality, include_fields=['user_id', 'film_id', 'produce_timestamp',])
+        key = self._get_key(film_quality, include_fields=['user_id', 'film_id', 'produce_timestamp',])
         message = self._get_message(film_quality)
         await self.producer.send(self.topic, key, message)
 
