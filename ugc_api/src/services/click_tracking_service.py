@@ -24,7 +24,7 @@ class ClickTrackingService(BaseService):
             **click_info.model_dump(),
 
         )
-        key = self._get_key('click', click_info, include_fields=['user_id', 'url', 'produce_timestamp', ])
+        key = self._get_key(click_info, include_fields=['user_id', 'url', 'produce_timestamp', ])
         message = self._get_message(click_info)
         await self.producer.send(self.topic, key, message)
 

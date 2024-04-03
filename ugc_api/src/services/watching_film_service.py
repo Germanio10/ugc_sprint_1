@@ -23,7 +23,7 @@ class WatchingFilmService(BaseService):
             produce_timestamp=datetime.now(),
             **film_progress.model_dump(),
         )
-        key = self._get_key('progress', film_progress, include_fields=['user_id', 'film_id', 'produce_timestamp' ])
+        key = self._get_key(film_progress, include_fields=['user_id', 'film_id', 'produce_timestamp' ])
         message = self._get_message(film_progress)
         await self.producer.send(self.topic, key, message)
 

@@ -1,6 +1,6 @@
 from datetime import datetime
 from uuid import UUID
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, validator
 
 
 class Genre(BaseModel):
@@ -10,12 +10,20 @@ class Genre(BaseModel):
 
 class FilmQualityEventDTO(BaseModel):
     film_id: UUID
-    film_title: str
     quality: int
     event_timestamp: datetime
 
+    @validator('event_timestamp')
+    def event_timestamp_validate(cls, value: datetime):
+        return value.replace(tzinfo=None)
+
 
 class FilmQualityProduceEventDTO(FilmQualityEventDTO):
+    event_type: str = Field(default='quality')
     user_id: str
     produce_timestamp: datetime
+
+    @validator('produce_timestamp')
+    def produce_timestamp_validate(cls, value: datetime):
+        return value.replace(tzinfo=None)
 

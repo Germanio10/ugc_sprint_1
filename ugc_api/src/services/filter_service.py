@@ -21,7 +21,7 @@ class SearchFilterSevice(BaseService):
             **search_filter.model_dump(),
         )
 
-        key = self._get_key('filter', search_filter, include_fields=['user_id', 'genre_id', 'produce_timestamp',])
+        key = self._get_key(search_filter, include_fields=['user_id', 'genre_id', 'produce_timestamp',])
         message = self._get_message(search_filter)
         await self.producer.send(self.topic, key, message)
 

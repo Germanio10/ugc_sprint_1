@@ -3,7 +3,7 @@ import os
 import backoff
 from dotenv import load_dotenv
 from clickhouse_driver import Client
-from clickhouse_driver import  errors
+from clickhouse_driver import errors
 
 
 load_dotenv()
@@ -16,9 +16,10 @@ def connect_clickhouse(client: Client):
 
 
 if __name__ == "__main__":
-    host = os.getenv("CLICKHOUSE_HOST")
+    host = os.getenv("CLICKHOUSE_MAIN_HOST")
     port = os.getenv("CLICKHOUSE_PORT")
+    all_hosts = os.getenv("CLICKHOUSE_MULTIPLE_HOSTS")
 
-    client = Client(host=host, port=port)
+    client = Client(host=host, alt_hosts=all_hosts)
     
     connect_clickhouse(client)
