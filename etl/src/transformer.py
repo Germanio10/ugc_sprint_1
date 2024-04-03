@@ -1,5 +1,3 @@
-
-
 from collections import defaultdict
 
 from models import FilmQualityEvent, ClickInfoEvent, FilmProgressEvent, FilterEvent
@@ -12,6 +10,7 @@ models = {
     'filter': FilterEvent,
 }
 
+
 class Transformer:
 
     @staticmethod
@@ -21,6 +20,3 @@ class Transformer:
             event_type = event.pop('event_type')
             results[event_type].append(models[event_type](**event))
         return results, len(events)
-
-
-

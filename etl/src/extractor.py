@@ -1,6 +1,10 @@
 from kafka import KafkaConsumer
-from  datetime import datetime
+
+
+from datetime import datetime
 from logger import logger
+
+
 import json
 
 
@@ -31,5 +35,3 @@ class Extractor:
             last_produce_time = max(self.events_time)
             self.events_time.clear()
         return messages, last_produce_time
-
-

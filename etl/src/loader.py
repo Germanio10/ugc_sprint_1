@@ -1,5 +1,3 @@
-
-
 from clickhouse_client import Clickhouse
 
 

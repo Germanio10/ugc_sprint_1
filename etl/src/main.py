@@ -27,5 +27,3 @@ if __name__ == '__main__':
 
     etl = ETL(extractor=Extractor(consumer), loader=Loader(clickhouse))
     etl.run(state)
-
-

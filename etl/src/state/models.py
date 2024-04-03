@@ -17,5 +17,3 @@ class State:
 
     def get_state(self, key: str) -> Any:
         return self.storage.retrieve_state().get(key)
-
-

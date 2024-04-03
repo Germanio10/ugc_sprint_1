@@ -3,7 +3,7 @@ import os
 import backoff
 from dotenv import load_dotenv
 from clickhouse_driver import Client
-from clickhouse_driver import  errors
+from clickhouse_driver import errors
 
 
 load_dotenv()

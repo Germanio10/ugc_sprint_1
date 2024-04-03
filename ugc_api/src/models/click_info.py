@@ -8,7 +8,7 @@ class ClickInfoEventDTO(BaseModel):
     time_on_page: int
     event_timestamp: datetime
 
-    @validator('event_timestamp')
+    @validator('event_timestamp', 'click_time')
     def event_timestamp_validate(cls, value: datetime):
         return value.replace(tzinfo=None)
 
