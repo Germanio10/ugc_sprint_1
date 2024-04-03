@@ -17,6 +17,7 @@ class ClickhouseSettings(BaseSettings):
         validation_alias='CLICKHOUSE_MAIN_HOST', default='localhost')
     port: str = Field(validation_alias='CLICKHOUSE_MAIN_PORT',
                       default='localhost')
+    alt_hosts: str = Field(validation_alias='CLICKHOUSE_MULTIPLE_HOSTS', default='localhost')
 
 
 class Settings(BaseSettings):

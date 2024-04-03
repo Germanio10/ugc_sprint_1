@@ -20,7 +20,12 @@ if __name__ == '__main__':
     )
     consumer.subscribe(settings.kafka.topics)
 
-    client_clickhouse = Client(host=settings.clickhouse.main_host, port=settings.clickhouse.port)
+    client_clickhouse = Client(
+                                host=settings.clickhouse.main_host,
+                                port=settings.clickhouse.port,
+                                alt_hosts=settings.clickhouse.alt_hosts,
+                                round_robin=True
+                               )
 
     clickhouse = Clickhouse(client_clickhouse)
     clickhouse.init_database()
