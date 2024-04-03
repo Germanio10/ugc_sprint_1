@@ -13,6 +13,7 @@ class Clickhouse:
         self._create_quality_table()
         self._create_film_progress_table()
         self._create_click_tracking_table()
+        self._create_filter_table()
 
     def _create_quality_table(self):
         self.client.execute(
@@ -55,6 +56,23 @@ class Clickhouse:
                     url String,
                     click_time DateTime64(6, 'Asia/Istanbul'),
                     time_on_page Int32,
+                    event_timestamp DateTime64(6, 'Asia/Istanbul'),
+                    user_id UUID,
+                    produce_timestamp DateTime64(6, 'Asia/Istanbul')
+                )
+                Engine=MergeTree()
+            ORDER BY produce_timestamp
+            '''
+        )
+
+    def _create_filter_table(self):
+        self.client.execute(
+            '''
+            CREATE TABLE IF NOT EXISTS ugc.filter ON CLUSTER company_cluster
+                (
+                    genre_id UUID,
+                    genre String,
+                    sort String,
                     event_timestamp DateTime64(6, 'Asia/Istanbul'),
                     user_id UUID,
                     produce_timestamp DateTime64(6, 'Asia/Istanbul')
