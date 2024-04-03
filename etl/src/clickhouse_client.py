@@ -1,10 +1,12 @@
-from clickhouse_driver import Client
+import backoff
+from clickhouse_driver import Client, errors
 
 
 class Clickhouse:
     def __init__(self, client: Client) -> None:
         self.client = client
 
+    @backoff.on_exception(backoff.expo, (errors.NetworkError, errors.ServerException))
     def init_database(self):
         self.client.execute(
             'CREATE DATABASE IF NOT EXISTS ugc ON CLUSTER company_cluster')

@@ -1,5 +1,6 @@
-from kafka import KafkaConsumer
+import backoff
 
+from kafka import KafkaConsumer, errors
 
 from datetime import datetime
 from logger import logger
@@ -13,6 +14,8 @@ class Extractor:
         self.consumer = consumer
         self.events_time = []
 
+    @backoff.on_exception(backoff.expo, (errors.KafkaTimeoutError, errors.KafkaConnectionError,
+                                         errors.KafkaConfigurationError))
     def extract(self, last_produce_time: datetime) -> tuple[list, datetime]:
         messages = []
         records = self.consumer.poll(10.0)
