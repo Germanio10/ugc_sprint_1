@@ -39,15 +39,15 @@ docker-compose up tests
 
 | Variable              | Explanation                                         | Example                                                       |
 |-----------------------|-----------------------------------------------------|---------------------------------------------------------------|
-| `KAFKA_HOSTS`         | PostgreSQL Hostname                                 | `kafka-0:9092,kafka-1:9092,kafka-2:9092`                      |
-| `TOPICS`              | PostgreSQL Password                                 | `["messages"]`                                                |
-| `NUM_PARTITIONS`      | PostgreSQL User                                     | `3`                                                           |
-| `REPLICATION_FACTOR`  | PostgreSQL Database Name                            | `3`                                                           |
-| `CLICKHOUSE_MAIN_HOST`| PostgreSQL Port                                     | `clickhouse-node1`                                            | 
-| `CLICKHOUSE_MAIN_PORT`| Redis Hostname                                      | `9000`                                                        |
-| `CLICKHOUSE_ALL_HOSTS`| Redis Port                                          | `["clickhouse-node2", "clickhouse-node3", "clickhouse-node4"]`|
-| `CLICKHOUSE_MULTIPLE_HOSTS`| FastAPI Hostname                               | `clickhouse-node2, clickhouse-node3, clickhouse-node4`        |
-| `FILMS_API_BASE_URL`  | FastAPI Port                                        | `http://fastapi_nginx:81`                                     |
+| `KAFKA_HOSTS`         | Kafka Hostnames                                     | `kafka-0:9092,kafka-1:9092,kafka-2:9092`                      |
+| `TOPICS`              | Kafk topics                                         | `["messages"]`                                                |
+| `NUM_PARTITIONS`      | Number of partitions                                | `3`                                                           |
+| `REPLICATION_FACTOR`  | Replication factor                                  | `3`                                                           |
+| `GROUP_ID`            | Kafka group id                                      | `etl_kafka_clickhouse`                                        |
+| `CLICKHOUSE_MAIN_HOST`| Clickhouse hostname                                 | `clickhouse-node1`                                            | 
+| `CLICKHOUSE_MAIN_PORT`| Clickhouse port                                     | `9000`                                                        |
+| `CLICKHOUSE_MULTIPLE_HOSTS`| Clickhouse hostnames                           | `clickhouse-node2, clickhouse-node3, clickhouse-node4`        |
+| `FILMS_API_BASE_URL`  | Films api url                                       | `http://fastapi_nginx:81`                                     |
 
 ## OpenAPI
 Для проверки работоспособности проекта используется Swagger. 
