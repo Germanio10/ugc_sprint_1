@@ -163,6 +163,19 @@ services:
     networks:
       - my_network
 
+  ugc_tests:
+    build: ./tests/functional
+    container_name: ugc_tests
+    depends_on:
+      - ugc_api_service
+      - kafka-0
+      - kafka-1
+      - kafka-2
+    env_file:
+      - .env
+    networks:
+      - my_network
+
 volumes:
   kafka_0_data:
   kafka_1_data:
