@@ -18,6 +18,9 @@ aiokafka = "^0.8.1"
 orjson = "^3.9.15"
 aiohttp = "^3.9.3"
 async-fastapi-jwt-auth = "^0.6.4"
+pytest = "^7.4.4"
+pytest-asyncio = "^0.12.0"
+pydantic = "^2.1.1"
 
 
 [build-system]
