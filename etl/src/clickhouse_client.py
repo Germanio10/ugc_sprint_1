@@ -85,9 +85,6 @@ class Clickhouse:
     def insert(self, events: dict):
         for table_name, events in events.items():
             fields = events[0].dict().keys()
-            values_count = ", ".join(["'%s'"] * len(fields))
-            bind_values = ', '.join(f'({values_count})' % tuple(
-                event.dict().values()) for event in events)
             column_names = ', '.join(fields)
-            self.client.execute(
-                f'INSERT INTO ugc.{table_name} ({column_names}) VALUES {bind_values}')
+            values = tuple(event.dict() for event in events)
+            self.client.execute(f'INSERT INTO ugc.{table_name} ({column_names}) VALUES', values)

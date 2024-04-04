@@ -6,6 +6,7 @@ class KafkaSettings(BaseSettings):
     kafka_hosts: str = Field(
         validation_alias='KAFKA_HOSTS', default='localhost:9094')
     topics: list[str] = Field(validation_alias='TOPICS', default=[])
+    group_id: str = Field(validation_alias='GROUP_ID', default='etl')
 
     @property
     def kafka_hosts_as_list(self) -> list[str]:

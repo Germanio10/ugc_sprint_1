@@ -3,8 +3,6 @@ from kafka import KafkaConsumer
 
 from clickhouse_client import Clickhouse
 from logger import logger
-from state.json_file_storage import JsonFileStorage
-from state.models import State
 from loader import Loader
 from extractor import Extractor
 from pipline import ETL
@@ -12,11 +10,12 @@ from config import settings
 
 
 if __name__ == '__main__':
-    state = State(JsonFileStorage(logger=logger))
     consumer = KafkaConsumer(
      bootstrap_servers=settings.kafka.kafka_hosts_as_list,
      auto_offset_reset='earliest',
      max_poll_records=500,
+     enable_auto_commit=False,
+     group_id=settings.kafka.group_id
     )
     consumer.subscribe(settings.kafka.topics)
 
@@ -31,4 +30,4 @@ if __name__ == '__main__':
     clickhouse.init_database()
 
     etl = ETL(extractor=Extractor(consumer), loader=Loader(clickhouse))
-    etl.run(state)
+    etl.run()
