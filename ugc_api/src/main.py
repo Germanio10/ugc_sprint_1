@@ -9,7 +9,7 @@ import uvicorn
 from core.logger import LOGGING
 from core.config import JWTSettings, settings
 from api.v1 import events
-from db import kafka
+from db import kafka, mongo_storage
 from clients import api_session, admin_client_kafka
 
 
@@ -19,8 +19,12 @@ async def lifespan(app: FastAPI):
     api_session.session = client.ClientSession()
     kafka.kafka = AIOKafkaProducer(bootstrap_servers=settings.kafka.kafka_hosts_as_list)
 
+    await mongo_storage.create_database()
     await kafka.kafka.start()
+
     yield
+
+    await mongo_storage.close_connection()
     await kafka.kafka.stop()
     await api_session.session.close()
 
