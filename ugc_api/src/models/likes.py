@@ -1,12 +1,11 @@
 from datetime import datetime
-from uuid import UUID
 from pydantic import BaseModel, Field, validator
+from uuid import UUID
 
 
-class FilmProgressEventDTO(BaseModel):
+class LikeInfoEventDTO(BaseModel):
     film_id: UUID
-    watching_time: int
-    film_percentage: int
+    like: bool
     event_timestamp: datetime
 
     @validator('event_timestamp')
@@ -14,8 +13,8 @@ class FilmProgressEventDTO(BaseModel):
         return value.replace(tzinfo=None)
 
 
-class FilmProgressProduceEventDTO(FilmProgressEventDTO):
-    event_type: str = Field(default='progress')
+class LikeInfoProduceEventDTO(LikeInfoEventDTO):
+    event_type: str = Field(default='like')
     user_id: str
     produce_timestamp: datetime
 

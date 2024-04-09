@@ -17,6 +17,9 @@ async def create_database() -> None:
         if 'likes' not in await db.list_collection_names():
             collection = db['likes']
             await collection.create_index([('film_id', 1), ('user_id', 1)], unique=True)
+        if 'likes_info' not in await db.list_collection_names():
+            collection = db['likes_info']
+            await collection.create_index(['film_id', 1], unique=True)
         logger.info('Connected to Mongo')
     except Exception as e:
         logger.exception(f"Error connecting to MongoDB: {e}")

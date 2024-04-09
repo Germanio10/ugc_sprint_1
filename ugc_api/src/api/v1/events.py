@@ -5,10 +5,12 @@ from services.produce_film_quality_service import get_produce_film_quality_serve
 from services.watching_film_service import get_watching_film_service, WatchingFilmService
 from services.filter_service import get_search_filter_servece, SearchFilterSevice
 from services.click_tracking_service import get_click_tracking_service, ClickTrackingService
+from services.likes import LikeService, get_like_service
 from models.film_quality import FilmQualityEventDTO
 from models.film_progress import FilmProgressEventDTO
 from models.filter import FilterEventDTO
 from models.click_info import ClickInfoEventDTO
+from models.likes import LikeInfoEventDTO
 from models.user import User
 from models.response_message import ResponseMessage
 from utils.messages import MESSAGE
@@ -74,3 +76,17 @@ async def process_search_filter(
 ):
     await service.execute(search_filter=search_filter, user=user)
     return ResponseMessage(message=MESSAGE)
+
+
+@router.post('/like/',
+             response_model=ResponseMessage,
+             description='Лайк или дизлайк',
+             status_code=HTTPStatus.CREATED)
+async def like(
+        like_info: LikeInfoEventDTO = Body(),
+        user: User = Depends(CheckAuth()),
+        service: LikeService = Depends(get_like_service)
+):
+    await service.execute(like=like_info, user=user)
+    return ResponseMessage(message=MESSAGE)
+
