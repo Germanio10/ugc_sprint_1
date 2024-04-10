@@ -13,7 +13,7 @@ from models.rating import RatingInfoEventDTO, RatingInfoProduceEventDTO
 class RatingService(BaseService):
     def __init__(self, producer: AbstractProducer) -> None:
         self.producer = producer
-        self.topic = 'messages'
+        self.topic = 'mongo'
 
     async def execute(self, rating: RatingInfoEventDTO, user: User) -> RatingInfoProduceEventDTO:
 

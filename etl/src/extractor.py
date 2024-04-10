@@ -2,7 +2,6 @@ import backoff
 
 from kafka import KafkaConsumer, errors
 
-from datetime import datetime
 from logger import logger
 
 
@@ -28,7 +27,6 @@ class Extractor:
                     except json.decoder.JSONDecodeError:
                         logger.warning("Format message is not correct")
         return messages
-    
+
     def commit(self):
         self.consumer.commit()
-

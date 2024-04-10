@@ -2,7 +2,6 @@ from clickhouse_driver import Client
 from kafka import KafkaConsumer
 
 from clickhouse_client import Clickhouse
-from logger import logger
 from loader import Loader
 from extractor import Extractor
 from pipline import ETL
