@@ -8,7 +8,7 @@ import uvicorn
 
 from core.logger import LOGGING
 from core.config import JWTSettings, settings
-from api.v1 import events
+from api.v1 import events, likes
 from db import kafka, mongo_storage
 from clients import api_session, admin_client_kafka
 
@@ -40,6 +40,7 @@ app = FastAPI(
 )
 
 app.include_router(events.router, prefix='/api/v1', tags=['events'])
+app.include_router(likes.router, prefix='/api/v1', tags=['likes'])
 
 
 @AuthJWT.load_config

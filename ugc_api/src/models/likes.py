@@ -5,7 +5,7 @@ from uuid import UUID
 
 class LikeInfoEventDTO(BaseModel):
     film_id: UUID
-    like: bool
+    rating: int
     event_timestamp: datetime
 
     @validator('event_timestamp')
