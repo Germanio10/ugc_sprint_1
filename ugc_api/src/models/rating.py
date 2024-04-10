@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field, validator
 from uuid import UUID
 
 
-class LikeInfoEventDTO(BaseModel):
+class RatingInfoEventDTO(BaseModel):
     film_id: UUID
     rating: int
     event_timestamp: datetime
@@ -13,8 +13,8 @@ class LikeInfoEventDTO(BaseModel):
         return value.replace(tzinfo=None)
 
 
-class LikeInfoProduceEventDTO(LikeInfoEventDTO):
-    event_type: str = Field(default='like')
+class RatingInfoProduceEventDTO(RatingInfoEventDTO):
+    event_type: str = Field(default='rating')
     user_id: str
     produce_timestamp: datetime
 

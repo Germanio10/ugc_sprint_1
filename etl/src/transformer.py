@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from models import FilmQualityEvent, ClickInfoEvent, FilmProgressEvent, FilterEvent
+from models import FilmQualityEvent, ClickInfoEvent, FilmProgressEvent, FilterEvent, LikeEvent
 
 
 models = {
@@ -8,6 +8,7 @@ models = {
     'click_info': ClickInfoEvent,
     'progress': FilmProgressEvent,
     'filter': FilterEvent,
+    'rating': LikeEvent
 }
 
 

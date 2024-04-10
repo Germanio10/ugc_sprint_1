@@ -14,11 +14,11 @@ async def create_database() -> None:
         mongo_client = AsyncIOMotorClient(f"mongodb://{settings.mongo.host}:{settings.mongo.port}")
         db = mongo_client['UGC']
 
-        if 'likes' not in await db.list_collection_names():
-            collection = db['likes']
-            await collection.create_index([('film_id', 1), ('user_id', 1)], unique=True)
-        if 'likes_info' not in await db.list_collection_names():
-            await db.create_collection('likes_info')
+        if 'rating' not in await db.list_collection_names():
+            collection = db['rating']
+            await collection.create_index([('film_id', 1), ('user_id', 1)])
+        if 'rating_info' not in await db.list_collection_names():
+            await db.create_collection('rating_info')
         logger.info('Connected to Mongo')
     except Exception as e:
         logger.exception(f"Error connecting to MongoDB: {e}")

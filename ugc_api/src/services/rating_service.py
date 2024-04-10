@@ -7,30 +7,30 @@ from producers.abstract_producer import AbstractProducer
 from producers.kafka_producer import get_producer
 from services.base_service import BaseService
 from models.user import User
-from models.likes import LikeInfoEventDTO, LikeInfoProduceEventDTO
+from models.rating import RatingInfoEventDTO, RatingInfoProduceEventDTO
 
 
-class LikeService(BaseService):
+class RatingService(BaseService):
     def __init__(self, producer: AbstractProducer) -> None:
         self.producer = producer
         self.topic = 'messages'
 
-    async def execute(self, like: LikeInfoEventDTO, user: User) -> LikeInfoProduceEventDTO:
+    async def execute(self, rating: RatingInfoEventDTO, user: User) -> RatingInfoProduceEventDTO:
 
-        like = LikeInfoProduceEventDTO(
+        rating = RatingInfoProduceEventDTO(
             user_id=user.user_id,
             produce_timestamp=datetime.utcnow(),
-            **like.model_dump()
+            **rating.model_dump()
         )
-        key = self._get_key(like, include_fields=['user_id', 'film_id', 'produce_timestamp'])
-        message = self._get_message(like)
+        key = self._get_key(rating, include_fields=['user_id', 'film_id', 'produce_timestamp'])
+        message = self._get_message(rating)
         await self.producer.send(self.topic, key, message)
 
-        return like
+        return rating
 
 
 @lru_cache()
-def get_like_service(
+def get_rating_service(
         producer: AbstractProducer = Depends(get_producer)
-) -> LikeService:
-    return LikeService(producer=producer)
+) -> RatingService:
+    return RatingService(producer=producer)

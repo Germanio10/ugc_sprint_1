@@ -36,3 +36,11 @@ class FilterEvent(BaseModel):
     event_timestamp: datetime
     user_id: str
     produce_timestamp: datetime
+
+
+class LikeEvent(BaseModel):
+    film_id: str
+    rating: int
+    event_timestamp: datetime
+    user_id: str
+    produce_timestamp: datetime

@@ -14,7 +14,7 @@ class Clickhouse:
         self._create_film_progress_table()
         self._create_click_tracking_table()
         self._create_filter_table()
-        self._create_like_table()
+        self._create_rating_table()
 
     def _create_quality_table(self):
         self.client.execute(
@@ -83,13 +83,13 @@ class Clickhouse:
             '''
         )
 
-    def _create_like_table(self):
+    def _create_rating_table(self):
         self.client.execute(
             '''
-            CREATE TABLE IF NOT EXISTS ugc.like ON CLUSTER company_cluster
+            CREATE TABLE IF NOT EXISTS ugc.rating ON CLUSTER company_cluster
                 (
                     film_id UUID,
-                    rating UInt8,
+                    rating Int32,
                     event_timestamp DateTime64(6, 'Asia/Istanbul'),
                     user_id UUID,
                     produce_timestamp DateTime64(6, 'Asia/Istanbul')
