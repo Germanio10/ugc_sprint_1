@@ -36,3 +36,18 @@ class FilterEvent(BaseModel):
     event_timestamp: datetime
     user_id: str
     produce_timestamp: datetime
+
+class WatchlistEvent(BaseModel):
+    film_id: str
+    in_watchlist: bool
+    user_id: str
+    produce_timestamp: datetime
+
+class ReviewsEvent(BaseModel):
+    film_id: str
+    review: str
+    name: str
+    review_timestamp: datetime
+    user_id: str
+    produce_timestamp: datetime
+    
