@@ -16,7 +16,7 @@ async def create_database() -> None:
 
         if 'rating' not in await db.list_collection_names():
             collection = db['rating']
-            await collection.create_index([('film_id', 1), ('user_id', 1)])
+            await collection.create_index([('film_id', 1), ('user_id', 1)], unique=True)
         if 'rating_info' not in await db.list_collection_names():
             await db.create_collection('rating_info')
         logger.info('Connected to Mongo')

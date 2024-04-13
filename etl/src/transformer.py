@@ -10,6 +10,7 @@ models = {
     'filter': FilterEvent,
     'rating': LikeEvent
 }
+### Добавить модель
 
 
 class Transformer:

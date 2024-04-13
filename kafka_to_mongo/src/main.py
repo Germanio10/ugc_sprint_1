@@ -15,7 +15,7 @@ if __name__ == '__main__':
      enable_auto_commit=False,
      group_id=settings.kafka.group_id
     )
-    consumer.subscribe(settings.kafka.topic)
+    consumer.subscribe(["mongo"])
 
     mongo = MongoClient(f"mongodb://{settings.mongo.host}:{settings.mongo.port}")
     db = mongo['UGC']

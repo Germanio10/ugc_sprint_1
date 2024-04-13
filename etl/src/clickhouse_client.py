@@ -15,6 +15,7 @@ class Clickhouse:
         self._create_click_tracking_table()
         self._create_filter_table()
         self._create_rating_table()
+        ### Добавить таблицу для delete_rating
 
     def _create_quality_table(self):
         self.client.execute(

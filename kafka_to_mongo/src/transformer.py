@@ -12,8 +12,7 @@ class Transformer:
 
     @staticmethod
     def transform(events: list) -> tuple[dict, int]:
-        results = defaultdict(list)
         for event in events:
-            event_type = event.pop('event_type')
-            results[event_type].append(models[event_type](**event))
-        return results, len(events)
+            for key in ['event_type', 'produce_timestamp', 'event_timestamp']:
+                del event[key]
+            return event, len(events)
