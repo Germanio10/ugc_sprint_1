@@ -32,7 +32,7 @@ app = FastAPI(
     default_response_class=ORJSONResponse,
     description="Сервис, предоставляющий API для сбора аналитической информации",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 app.include_router(events.router, prefix='/api/v1', tags=['events'])
@@ -49,5 +49,5 @@ if __name__ == '__main__':
         host='0.0.0.0',
         port=8000,
         log_config=LOGGING,
-        log_level=settings.log_level
+        log_level=settings.log_level,
     )

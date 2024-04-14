@@ -13,6 +13,7 @@ def connect_kafka(hosts: list[str]):
 
 
 if __name__ == "__main__":
-    hosts = os.getenv("KAFKA_HOSTS").split(',')
 
-    connect_kafka(hosts)
+    hosts = os.getenv("KAFKA_HOSTS") or 'localhost:9094'
+
+    connect_kafka(hosts.split(','))

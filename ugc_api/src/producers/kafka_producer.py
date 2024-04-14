@@ -7,7 +7,6 @@ from db.kafka import get_kafka
 
 
 class KafkaProducer(AbstractProducer):
-
     def __init__(self, producer: AIOKafkaProducer) -> None:
         self.producer = producer
 

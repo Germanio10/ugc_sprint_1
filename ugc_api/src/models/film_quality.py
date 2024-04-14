@@ -26,4 +26,3 @@ class FilmQualityProduceEventDTO(FilmQualityEventDTO):
     @validator('produce_timestamp')
     def produce_timestamp_validate(cls, value: datetime):
         return value.replace(tzinfo=None)
-
