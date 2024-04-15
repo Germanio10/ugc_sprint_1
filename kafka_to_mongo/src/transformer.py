@@ -13,6 +13,6 @@ class Transformer:
     @staticmethod
     def transform(events: list) -> tuple[dict, int]:
         for event in events:
-            for key in ['event_type', 'produce_timestamp', 'event_timestamp']:
+            for key in ['produce_timestamp', 'event_timestamp']:
                 del event[key]
             return event, len(events)

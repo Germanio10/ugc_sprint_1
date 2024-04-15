@@ -15,7 +15,7 @@ class Clickhouse:
         self._create_click_tracking_table()
         self._create_filter_table()
         self._create_rating_table()
-        ### Добавить таблицу для delete_rating
+        self._create_rating_rm_table()
 
     def _create_quality_table(self):
         self.client.execute(
@@ -91,6 +91,21 @@ class Clickhouse:
                 (
                     film_id UUID,
                     rating Int32,
+                    event_timestamp DateTime64(6, 'Asia/Istanbul'),
+                    user_id UUID,
+                    produce_timestamp DateTime64(6, 'Asia/Istanbul')
+                )
+                Engine=MergeTree()
+            ORDER BY produce_timestamp
+            '''
+        )
+
+    def _create_rating_rm_table(self):
+        self.client.execute(
+            '''
+            CREATE TABLE IF NOT EXISTS ugc.rating_rm ON CLUSTER company_cluster
+                (
+                    film_id UUID,
                     event_timestamp DateTime64(6, 'Asia/Istanbul'),
                     user_id UUID,
                     produce_timestamp DateTime64(6, 'Asia/Istanbul')

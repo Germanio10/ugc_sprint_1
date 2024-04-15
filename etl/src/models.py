@@ -44,3 +44,10 @@ class LikeEvent(BaseModel):
     event_timestamp: datetime
     user_id: str
     produce_timestamp: datetime
+
+
+class RatingRmEvent(BaseModel):
+    film_id: str
+    event_timestamp: datetime
+    user_id: str
+    produce_timestamp: datetime

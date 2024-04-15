@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from models import FilmQualityEvent, ClickInfoEvent, FilmProgressEvent, FilterEvent, LikeEvent
+from models import FilmQualityEvent, ClickInfoEvent, FilmProgressEvent, FilterEvent, LikeEvent, RatingRmEvent
 
 
 models = {
@@ -8,9 +8,9 @@ models = {
     'click_info': ClickInfoEvent,
     'progress': FilmProgressEvent,
     'filter': FilterEvent,
-    'rating': LikeEvent
+    'rating': LikeEvent,
+    'rating_rm': RatingRmEvent
 }
-### Добавить модель
 
 
 class Transformer:
