@@ -21,25 +21,24 @@ class ReviewsProduceEventDTO(ReviewsEventDTO):
     @validator('produce_timestamp')
     def produce_timestamp_validate(cls, value: datetime):
         return value.replace(tzinfo=None)
-
-# class LikeReviewsEventDTO(BaseModel):
-#     review_id: UUID
-
-# class LikeReviewsProduceEventDTO(LikeReviewsEventDTO):
-#     event_type: str = Field(default='like')
-#     user_id: str
-#     produce_timestamp: datetime
-
-#     @validator('produce_timestamp')
-#     def produce_timestamp_validate(cls, value: datetime):
-#         return value.replace(tzinfo=None)
     
-# class DeleteReviewsEventDTO(BaseModel):
-#     film_id: UUID
-#     event_type: str = Field(default='review_rm')
-#     user_id: str
-#     produce_timestamp: datetime
+class RatingInfoEventDTO(BaseModel):
+    review_id: UUID
+    rating: int
 
-#     @validator('produce_timestamp')
-#     def produce_timestamp_validate(cls, value: datetime):
-#         return value.replace(tzinfo=None)
+class RatingInfoProduceEventDTO(RatingInfoEventDTO):
+    event_type: str = Field(default='reviews_rating')
+    user_id: str
+    produce_timestamp: datetime
+
+    @validator('produce_timestamp')
+    def produce_timestamp_validate(cls, value: datetime):
+        return value.replace(tzinfo=None)
+
+class ReviewsResposeDTO(BaseModel):
+    _id: str
+    film_id: UUID
+    review: str
+    name: str
+    review_timestamp: datetime
+    user_id: str

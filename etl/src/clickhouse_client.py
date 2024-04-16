@@ -17,7 +17,9 @@ class Clickhouse:
         self._create_rating_table()
         self._create_rating_rm_table()
         self._create_watchlist_table()
+        self._create_watchlist_rm_table()
         self._create_reviews_table()
+        self._create_reviews_rating_table()
 
     def _create_quality_table(self):
         self.client.execute(
@@ -116,6 +118,19 @@ class Clickhouse:
             ORDER BY produce_timestamp
             '''
         )
+    def _create_watchlist_rm_table(self):
+        self.client.execute(
+            '''
+            CREATE TABLE IF NOT EXISTS ugc.watchlist_rm ON CLUSTER company_cluster
+                (
+                    film_id UUID,
+                    user_id UUID,
+                    produce_timestamp DateTime64(6, 'Asia/Istanbul')
+                )
+                ENGINE = MergeTree()
+            ORDER BY (produce_timestamp);
+            '''
+        )
     def _create_watchlist_table(self):
         self.client.execute(
             '''
@@ -145,6 +160,20 @@ class Clickhouse:
                 )
                 ENGINE = MergeTree()
             ORDER BY (produce_timestamp);
+            '''
+        )
+    def _create_reviews_rating_table(self):
+        self.client.execute(
+            '''
+            CREATE TABLE IF NOT EXISTS ugc.reviews_rating ON CLUSTER company_cluster
+                (
+                    review_id UUID,
+                    rating Int32,
+                    user_id UUID,
+                    produce_timestamp DateTime64(6, 'Asia/Istanbul')
+                )
+                Engine=MergeTree()
+            ORDER BY produce_timestamp
             '''
         )
 

@@ -21,6 +21,7 @@ if __name__ == '__main__':
     client_clickhouse = Client(
                                 host=settings.clickhouse.main_host,
                                 port=settings.clickhouse.port, ## Добавить мультихосты
+                                alt_hosts=settings.clickhouse.alt_hosts,
                                 round_robin=True
                                )
 

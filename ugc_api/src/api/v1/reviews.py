@@ -1,8 +1,8 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Body, Depends
-from services.reviews_service import add_to_reviews_service, AddToReviewsService
-from models.reviews import ReviewsEventDTO
+from fastapi import APIRouter, Body, Depends, Query
+from services.reviews_service import add_to_reviews_service, AddToReviewsService, reviews_rating_service, ReviewsRatingService, GetReviewsService, get_reviews_service
+from models.reviews import ReviewsEventDTO, RatingInfoEventDTO,  ReviewsResposeDTO
 from models.user import User
 from models.response_message import ResponseMessage
 from utils.messages import MESSAGE
@@ -26,15 +26,29 @@ async def watchlist_post(
     return ResponseMessage(message=MESSAGE)
 
 
-# @router.post('/delete_watchlist/',
-#              response_model=ResponseMessage,
-#              description="Добавление лайка к отзыву",
-#              status_code=HTTPStatus.CREATED
-#              )
-# async def watchlist_delete(
-#         watchlist: WatchlistEventDTO = Body(),
-#         user: User = Depends(CheckAuth()),
-#         service: RemoveFromWatchlistService = Depends(remove_from_watchlist_service)
-# ):
-#     await service.execute(watchlist=watchlist, user=user)
-#     return ResponseMessage(message=MESSAGE)
+@router.post('/rate_review/',
+             response_model=ResponseMessage,
+             description="Оценка отзыва",
+             status_code=HTTPStatus.CREATED
+             )
+async def rate_review(
+        rating_info: RatingInfoEventDTO = Body(),
+        user: User = Depends(CheckAuth()),
+        service: ReviewsRatingService = Depends(reviews_rating_service)
+):
+    await service.execute(rating=rating_info, user=user)
+    return ResponseMessage(message=MESSAGE)
+
+@router.get('/get_reviews/',
+             response_model=list[ReviewsResposeDTO],
+             description="Список всех отзывов",
+             status_code=HTTPStatus.CREATED
+             )
+async def watchlist_get(
+        field: str = Query(),
+        ascending: bool = Query(),
+        user: User = Depends(CheckAuth()),
+        service: GetReviewsService = Depends(get_reviews_service)
+) -> list[ReviewsResposeDTO]:
+    reviews = await service.execute(user=user, field=field, ascending=ascending)
+    return reviews

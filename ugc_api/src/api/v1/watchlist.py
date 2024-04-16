@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from fastapi import APIRouter, Body, Depends
-from services.watchlist_service import add_to_watchlist_service, remove_from_watchlist_service,AddToWatchlistService, RemoveFromWatchlistService
+from services.watchlist_service import add_to_watchlist_service, remove_from_watchlist_service,AddToWatchlistService, RemoveFromWatchlistService, GetWatchlistService, get_wathlist_service
 from models.watchlist import WatchlistEventDTO
 from models.user import User
 from models.response_message import ResponseMessage
@@ -38,3 +38,15 @@ async def watchlist_delete(
 ):
     await service.execute(watchlist=watchlist, user=user)
     return ResponseMessage(message=MESSAGE)
+
+@router.get('/get_watchlist/',
+             response_model=list[WatchlistEventDTO],
+             description="Список всех закладок",
+             status_code=HTTPStatus.CREATED
+             )
+async def watchlist_get(
+        user: User = Depends(CheckAuth()),
+        service: GetWatchlistService = Depends(get_wathlist_service)
+) -> list[WatchlistEventDTO]:
+    watchlist = await service.execute(user=user)
+    return watchlist
