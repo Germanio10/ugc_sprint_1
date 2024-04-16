@@ -37,6 +37,20 @@ class FilterEvent(BaseModel):
     user_id: str
     produce_timestamp: datetime
 
+class LikeEvent(BaseModel):
+    film_id: str
+    rating: int
+    event_timestamp: datetime
+    user_id: str
+    produce_timestamp: datetime
+
+
+class RatingRmEvent(BaseModel):
+    film_id: str
+    event_timestamp: datetime
+    user_id: str
+    produce_timestamp: datetime
+
 class WatchlistEvent(BaseModel):
     film_id: str
     in_watchlist: bool
@@ -50,4 +64,3 @@ class ReviewsEvent(BaseModel):
     review_timestamp: datetime
     user_id: str
     produce_timestamp: datetime
-    
