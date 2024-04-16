@@ -5,7 +5,7 @@ from services.watchlist_service import add_to_watchlist_service, remove_from_wat
 from models.watchlist import WatchlistEventDTO
 from models.user import User
 from models.response_message import ResponseMessage
-from utils.messages import MESSAGE
+from utils.messages import MESSAGE, DELETE_MESSAGE
 from utils.check_auth import CheckAuth
 
 
@@ -37,7 +37,7 @@ async def watchlist_delete(
         service: RemoveFromWatchlistService = Depends(remove_from_watchlist_service)
 ):
     await service.execute(watchlist=watchlist, user=user)
-    return ResponseMessage(message=MESSAGE)
+    return ResponseMessage(message=DELETE_MESSAGE)
 
 @router.get('/get_watchlist/',
              response_model=list[WatchlistEventDTO],
