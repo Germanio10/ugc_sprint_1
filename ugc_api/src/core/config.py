@@ -7,6 +7,7 @@ from pydantic_settings import BaseSettings
 class KafkaSettings(BaseSettings):
     kafka_hosts: str = Field(validation_alias='KAFKA_HOSTS', default='localhost:9094')
     topics: list[str] = Field(validation_alias='TOPICS', default=[])
+    topic_for_mongo: list[str] = Field(validation_alias='TOPIC_FOR_MONGO', default=[])
     num_partitions: int = Field(validation_alias='NUM_PARTITIONS', default=3)
     replication_factor: int = Field(validation_alias='REPLICATION_FACTOR', default=3)
 

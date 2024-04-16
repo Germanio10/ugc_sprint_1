@@ -1,3 +1,6 @@
+import asyncio
+import schedule
+
 from contextlib import asynccontextmanager
 from aiokafka import AIOKafkaProducer
 from fastapi.applications import FastAPI
@@ -11,6 +14,7 @@ from core.config import JWTSettings, settings
 from api.v1 import events, rating
 from db import kafka, mongo_storage
 from clients import api_session, admin_client_kafka
+from utils.average_film_rating import RatingCalculator
 
 
 @asynccontextmanager
@@ -21,6 +25,8 @@ async def lifespan(app: FastAPI):
 
     await mongo_storage.create_database()
     await kafka.kafka.start()
+
+    schedule.every(2).seconds.do(lambda: asyncio.create_task(run_rating_calculation()))
 
     yield
 
@@ -48,7 +54,16 @@ def get_config():
     return JWTSettings()
 
 
+rating_calculator = RatingCalculator()
+
+
+async def run_rating_calculation():
+    while True:
+        await rating_calculator.calculate_average_rating()
+
+
 if __name__ == '__main__':
+
     uvicorn.run(
         'main:app',
         host='0.0.0.0',
