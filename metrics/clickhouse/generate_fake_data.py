@@ -10,12 +10,14 @@ def generate_fake_data(conn, table_name, count_data):
             user_id = "rand()"
             view_time = "rand()"
             event_time = "today()"
-            insert_data += (f"({id}, {user_id}, {view_time}, {event_time}),")
+            insert_data += f"({id}, {user_id}, {view_time}, {event_time}),"
 
             if i % 10000 == 0:
                 insert_data = insert_data[:-1]
                 cursor.execute(insert_data)
-                insert_data = f"INSERT INTO {table_name} (id, user_id, view_time, event_time) VALUES"
+                insert_data = (
+                    f"INSERT INTO {table_name} (id, user_id, view_time, event_time) VALUES"
+                )
 
         conn.commit()
 
@@ -29,4 +31,3 @@ if __name__ == "__main__":
     print(f'Total rows in the table: {count}')
 
     conn.close()
-

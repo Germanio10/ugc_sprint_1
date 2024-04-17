@@ -3,7 +3,6 @@ from uuid import UUID
 from pydantic import BaseModel, Field, validator
 
 
-
 class FilmProgressEventDTO(BaseModel):
     film_id: UUID
     watching_time: int

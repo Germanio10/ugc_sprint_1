@@ -2,6 +2,16 @@ import uuid
 from http import HTTPStatus
 
 from fastapi import APIRouter, Body, Depends
+from services.produce_film_quality_service import (
+    get_produce_film_quality_servece,
+    ProduceFilmQualityService,
+)
+from services.watching_film_service import get_watching_film_service, WatchingFilmService
+from services.filter_service import get_search_filter_servece, SearchFilterSevice
+from services.click_tracking_service import get_click_tracking_service, ClickTrackingService
+from models.film_quality import FilmQualityEventDTO
+from models.film_progress import FilmProgressEventDTO
+from models.filter import FilterEventDTO
 from models.click_info import ClickInfoEventDTO
 from models.film_progress import FilmProgressEventDTO
 from models.film_quality import FilmQualityEventDTO
@@ -35,10 +45,9 @@ router = APIRouter()
 )
 async def produce_film_quality(
     film_quality: FilmQualityEventDTO = Body(),
-    # user: User = Depends(CheckAuth()),
+    user: User = Depends(CheckAuth()),
     service: ProduceFilmQualityService = Depends(get_produce_film_quality_servece),
 ):
-    user = User(user_id=str(uuid.uuid4()), role_id=str(uuid.uuid4()), cookies={})
     await service.execute(film_quality=film_quality, user=user)
     return ResponseMessage(message=MESSAGE)
 
