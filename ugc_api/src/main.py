@@ -1,6 +1,3 @@
-import asyncio
-import schedule
-
 from contextlib import asynccontextmanager
 from aiokafka import AIOKafkaProducer
 from fastapi.applications import FastAPI
@@ -26,7 +23,8 @@ async def lifespan(app: FastAPI):
     await mongo_storage.create_database()
     await kafka.kafka.start()
 
-    schedule.every(2).seconds.do(lambda: asyncio.create_task(run_rating_calculation()))
+    rating_calculator = RatingCalculator()
+    rating_calculator.start()
 
     yield
 
@@ -52,14 +50,6 @@ app.include_router(rating.router, prefix='/api/v1', tags=['rating'])
 @AuthJWT.load_config
 def get_config():
     return JWTSettings()
-
-
-rating_calculator = RatingCalculator()
-
-
-async def run_rating_calculation():
-    while True:
-        await rating_calculator.calculate_average_rating()
 
 
 if __name__ == '__main__':

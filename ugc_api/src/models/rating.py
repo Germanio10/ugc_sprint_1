@@ -40,3 +40,7 @@ class RatingDeleteProduceEventDTO(RatingDeleteInfoEventDTO):
     @validator('produce_timestamp')
     def produce_timestamp_validate(cls, value: datetime):
         return value.replace(tzinfo=None)
+
+
+class AverageRating(BaseModel):
+    average_rating: float

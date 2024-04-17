@@ -1,9 +1,10 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, Body, Depends, Path, HTTPException
 from services.rating_service import (RatingService, get_rating_service,
-                                     DeleteRatingService, get_delete_rating_service)
-from models.rating import RatingInfoEventDTO, RatingDeleteInfoEventDTO
+                                     DeleteRatingService, get_delete_rating_service, AverageRatingService,
+                                     get_average_rating_service)
+from models.rating import RatingInfoEventDTO, RatingDeleteInfoEventDTO, AverageRating
 from models.user import User
 from models.response_message import ResponseMessage
 from utils.messages import MESSAGE, DELETE_MESSAGE
@@ -37,3 +38,19 @@ async def delete_rating(
 ):
     await service.execute(delete_rating=delete_rating_info, user=user)
     return ResponseMessage(message=DELETE_MESSAGE)
+
+
+@router.get('/average_rating/{film_id}',
+            response_model=AverageRating,
+            description='Средний рейтинг фильма',
+            status_code=HTTPStatus.OK)
+async def average_rating(
+        film_id: str = Path(title="UUID фильма"),
+        user: User = Depends(CheckAuth()),
+        service: AverageRatingService = Depends(get_average_rating_service),
+):
+    result = await service.get_average_rating(film_id=film_id, user=user)
+    if result:
+        return result
+    else:
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail='На этот фильм нет отзывов')

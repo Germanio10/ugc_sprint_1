@@ -51,3 +51,8 @@ class RatingRmEvent(BaseModel):
     event_timestamp: datetime
     user_id: str
     produce_timestamp: datetime
+
+
+class AverageRating(BaseModel):
+    film_id: str
+    average_rating: float

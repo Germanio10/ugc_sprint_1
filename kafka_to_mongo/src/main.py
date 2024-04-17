@@ -20,6 +20,5 @@ if __name__ == '__main__':
     mongo = MongoClient(f"mongodb://{settings.mongo.host}:{settings.mongo.port}")
     db = mongo['UGC']
 
-
     etl = ETL(extractor=Extractor(consumer), loader=Loader(db))
     etl.run()

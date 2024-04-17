@@ -1,14 +1,17 @@
 from datetime import datetime
 from functools import lru_cache
+from bson import Binary
 
 from fastapi import Depends
+from pymongo import MongoClient
 
 from producers.abstract_producer import AbstractProducer
 from producers.kafka_producer import get_producer
 from services.base_service import BaseService
 from models.user import User
 from models.rating import (RatingInfoEventDTO, RatingInfoProduceEventDTO, RatingDeleteInfoEventDTO,
-                           RatingDeleteProduceEventDTO)
+                           RatingDeleteProduceEventDTO, AverageRating)
+from core.config import settings
 
 
 class RatingService(BaseService):
@@ -30,7 +33,7 @@ class RatingService(BaseService):
         return rating
 
 
-class DeleteRatingService(BaseService):  ### Убрать дублирование
+class DeleteRatingService(BaseService):
     def __init__(self, producer: AbstractProducer) -> None:
         self.producer = producer
         self.topic = 'mongo'
@@ -49,6 +52,21 @@ class DeleteRatingService(BaseService):  ### Убрать дублировани
         return delete_rating
 
 
+class AverageRatingService(BaseService):
+
+    def __init__(self) -> None:
+        self.client = MongoClient(f"mongodb://{settings.mongo.host}:{settings.mongo.port}")
+        self.collection = 'rating_info'
+
+    async def get_average_rating(self, film_id, user: User):
+        db = self.client['UGC']
+        collection = db[self.collection]
+
+        document = collection.find_one({'film_id': film_id})
+        average_rating = document['average_rating']
+        return AverageRating(average_rating=average_rating)
+
+
 @lru_cache()
 def get_rating_service(
         producer: AbstractProducer = Depends(get_producer)
@@ -61,3 +79,9 @@ def get_delete_rating_service(
         producer: AbstractProducer = Depends(get_producer)
 ) -> DeleteRatingService:
     return DeleteRatingService(producer=producer)
+
+
+@lru_cache()
+def get_average_rating_service(
+) -> AverageRatingService:
+    return AverageRatingService()

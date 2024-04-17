@@ -16,6 +16,7 @@ class Clickhouse:
         self._create_filter_table()
         self._create_rating_table()
         self._create_rating_rm_table()
+        self._create_average_rating_film_table()
 
     def _create_quality_table(self):
         self.client.execute(
@@ -114,6 +115,20 @@ class Clickhouse:
             ORDER BY produce_timestamp
             '''
         )
+
+    def _create_average_rating_film_table(self):
+        self.client.execute(
+            '''
+            CREATE TABLE IF NOT EXISTS ugc.rating_rm ON CLUSTER company_cluster
+                (
+                    film_id UUID,
+                    average_rating Float32,
+                )
+                Engine=MergeTree()
+            ORDER BY produce_timestamp
+            '''
+        )
+
     def insert(self, events: dict):
         for table_name, events in events.items():
             fields = events[0].dict().keys()
