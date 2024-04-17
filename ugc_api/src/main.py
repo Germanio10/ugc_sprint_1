@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 
-import uvicorn
 import sentry_sdk
+import uvicorn
 from aiohttp import client
 from aiokafka import AIOKafkaProducer
 from api.v1 import events
@@ -14,11 +14,12 @@ from fastapi import FastAPI, Request, status
 from fastapi.responses import ORJSONResponse
 
 
-sentry_sdk.init(
-    dsn=settings.sentry_dsn,
-    traces_sample_rate=1.0,
-    profiles_sample_rate=1.0,
-)
+if not settings.is_debug:
+    sentry_sdk.init(
+        dsn=settings.sentry_dsn,
+        traces_sample_rate=1.0,
+        profiles_sample_rate=1.0,
+    )
 
 
 @asynccontextmanager
@@ -47,6 +48,8 @@ app = FastAPI(
 @app.middleware('http')
 async def before_request(request: Request, call_next):
     response = await call_next(request)
+    if settings.is_debug:
+        return response
     request_id = request.headers.get('X-Request-Id')
     if not request_id:
         return ORJSONResponse(

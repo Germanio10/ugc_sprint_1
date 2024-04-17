@@ -63,7 +63,6 @@ def get_token():
 
 @pytest.fixture(scope='session')
 def consumer_client():
-    print(test_settings.kafka.kafka_hosts_as_list)
     consumer = KafkaConsumer(
         bootstrap_servers=test_settings.kafka.kafka_hosts_as_list,
         enable_auto_commit=False,

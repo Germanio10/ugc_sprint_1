@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     )
     log_level: int | str = Field(validation_alias='LOG_LEVEL', default=logging.DEBUG)
     sentry_dsn: str = Field(validation_alias='SENTRY_DSN', default='')
+    is_debug: bool = Field(validation_alias='DEBUG', default=False)
 
 
 settings = Settings()
