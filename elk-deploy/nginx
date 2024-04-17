@@ -1,0 +1,1 @@
+NGINX_ACCESS %{IPORHOST:remote_ip} - - \[%{HTTPDATE:time}\] \\"%{WORD:method} %{PATH:endpoint} HTTP/%{NUMBER:http_version}\\" %{NUMBER:response_code} %{NUMBER:body_sent:bytes} \\"%{DATA:url}\\" \\"%{GREEDYDATA:agent}

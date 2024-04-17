@@ -15,6 +15,20 @@ services:
     networks:
       - my_network
 
+  ugc_nginx:
+    image: nginx:latest
+    container_name: ugc_nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx_config:/etc/nginx/conf.d:ro
+      - nginx_log:/var/log/nginx/
+    depends_on:
+      - ugc_api_service
+    ports:
+      - "83:83"
+    networks:
+      - my_network
+
   kafka-0:
     image: bitnami/kafka:3.4
     ports:
@@ -92,6 +106,8 @@ services:
     container_name: ugc_etl
     env_file:
       - .env
+    volumes:
+      - etl_log:/src/etl/logs
     depends_on:
       - kafka-0
       - kafka-1
@@ -176,10 +192,24 @@ services:
     networks:
       - my_network
 
+  filebeat:
+    image: elastic/filebeat:8.13.2
+    volumes:
+      - nginx_log:/var/log/nginx:ro
+      - etl_log:/src/etl/logs:ro
+      - ./elk-deploy/filebeat.yml:/usr/share/filebeat/filebeat.yml
+    depends_on:
+      - ugc_nginx
+    command: ["--strict.perms=false"]
+    networks:
+    - my_network
+
 volumes:
   kafka_0_data:
   kafka_1_data:
   kafka_2_data:
+  etl_log:
+  nginx_log:
 
 networks:
   my_network:
