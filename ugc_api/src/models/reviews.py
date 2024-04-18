@@ -1,7 +1,10 @@
 from datetime import datetime
 from uuid import UUID
 from pydantic import BaseModel, Field, validator
+from pydantic.functional_validators import BeforeValidator
+from typing_extensions import Annotated
 
+PyObjectId = Annotated[str, BeforeValidator(str)]
 
 class ReviewsEventDTO(BaseModel):
     film_id: UUID
@@ -36,7 +39,7 @@ class RatingInfoProduceEventDTO(RatingInfoEventDTO):
         return value.replace(tzinfo=None)
 
 class ReviewsResposeDTO(BaseModel):
-    _id: str
+    review_id: PyObjectId = Field(alias="_id")
     film_id: UUID
     review: str
     name: str

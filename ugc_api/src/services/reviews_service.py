@@ -52,9 +52,9 @@ class GetReviewsService(BaseService):
         self.collection = 'reviews'
 
     async def execute(self, user: User, field: str="review_timestamp", ascending: bool=True) -> list[ReviewsResposeDTO]:
-        watchlist = await self.producer.get_sorted(self.collection, ReviewsResposeDTO, field, ascending)
-
-        return watchlist
+        reviews = await self.producer.get_sorted(self.collection, ReviewsResposeDTO, field, ascending)
+    
+        return reviews
     
 @lru_cache()
 def add_to_reviews_service(

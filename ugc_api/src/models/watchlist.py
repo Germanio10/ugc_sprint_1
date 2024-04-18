@@ -19,3 +19,8 @@ class WatchlistProduceEventDTO(WatchlistEventDTO):
 class DeleteWatchlistEventDTO(WatchlistEventDTO):
     event_type: str = Field(default='watchlist_rm')
     user_id: str
+    produce_timestamp: datetime
+
+    @validator('produce_timestamp')
+    def produce_timestamp_validate(cls, value: datetime):
+        return value.replace(tzinfo=None)

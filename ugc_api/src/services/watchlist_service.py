@@ -36,9 +36,8 @@ class RemoveFromWatchlistService(BaseService):
         self.topic = 'mongo'
 
     async def execute(self, watchlist: WatchlistEventDTO, user: User) -> DeleteWatchlistEventDTO:
-        watchlist = WatchlistProduceEventDTO(
+        watchlist = DeleteWatchlistEventDTO(
             user_id=user.user_id,
-            in_watchlist=False,
             produce_timestamp=datetime.now(),
             **watchlist.model_dump(),
         )
