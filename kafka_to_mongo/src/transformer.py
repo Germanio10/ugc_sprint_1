@@ -1,7 +1,3 @@
-from collections import defaultdict
-
-from models import RatingEvent
-
 from models import RatingEvent, ReviewsEvent, WatchlistEvent, ReviewsRatingEvent
 
 
@@ -22,4 +18,3 @@ class Transformer:
                 if key in event:
                     del event[key]
             return event, len(events)
-        return event, len(events)
