@@ -1,7 +1,6 @@
 from datetime import datetime
 from functools import lru_cache
 
-from bson import Binary
 from core.config import settings
 from fastapi import Depends
 from models.rating import (
@@ -12,6 +11,9 @@ from models.rating import (
     RatingInfoProduceEventDTO,
 )
 from models.user import User
+from fastapi import Depends, HTTPException, status
+from pymongo import MongoClient
+
 from producers.abstract_producer import AbstractProducer
 from producers.kafka_producer import get_producer
 from pymongo import MongoClient
@@ -67,6 +69,10 @@ class AverageRatingService(BaseService):
         collection = db[self.collection]
 
         document = collection.find_one({'film_id': film_id})
+        if not document:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail='У этого фильма нет оценок'
+            )
         average_rating = document['average_rating']
         return AverageRating(average_rating=average_rating)
 
