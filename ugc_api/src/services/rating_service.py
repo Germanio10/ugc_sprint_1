@@ -1,17 +1,21 @@
 from datetime import datetime
 from functools import lru_cache
+
 from bson import Binary
-
+from core.config import settings
 from fastapi import Depends
-from pymongo import MongoClient
-
+from models.rating import (
+    AverageRating,
+    RatingDeleteInfoEventDTO,
+    RatingDeleteProduceEventDTO,
+    RatingInfoEventDTO,
+    RatingInfoProduceEventDTO,
+)
+from models.user import User
 from producers.abstract_producer import AbstractProducer
 from producers.kafka_producer import get_producer
+from pymongo import MongoClient
 from services.base_service import BaseService
-from models.user import User
-from models.rating import (RatingInfoEventDTO, RatingInfoProduceEventDTO, RatingDeleteInfoEventDTO,
-                           RatingDeleteProduceEventDTO, AverageRating)
-from core.config import settings
 
 
 class RatingService(BaseService):
@@ -22,9 +26,7 @@ class RatingService(BaseService):
     async def execute(self, rating: RatingInfoEventDTO, user: User) -> RatingInfoProduceEventDTO:
 
         rating = RatingInfoProduceEventDTO(
-            user_id=user.user_id,
-            produce_timestamp=datetime.utcnow(),
-            **rating.model_dump()
+            user_id=user.user_id, produce_timestamp=datetime.utcnow(), **rating.model_dump()
         )
         key = self._get_key(rating, include_fields=['user_id', 'film_id', 'produce_timestamp'])
         message = self._get_message(rating)
@@ -33,19 +35,21 @@ class RatingService(BaseService):
         return rating
 
 
-class DeleteRatingService(BaseService):
+class DeleteRatingService(BaseService):  ### Убрать дублирование
     def __init__(self, producer: AbstractProducer) -> None:
         self.producer = producer
         self.topic = 'mongo'
 
-    async def execute(self, delete_rating: RatingDeleteInfoEventDTO, user: User) -> RatingDeleteProduceEventDTO:
+    async def execute(
+        self, delete_rating: RatingDeleteInfoEventDTO, user: User
+    ) -> RatingDeleteProduceEventDTO:
 
         delete_rating = RatingDeleteProduceEventDTO(
-            user_id=user.user_id,
-            produce_timestamp=datetime.utcnow(),
-            **delete_rating.model_dump()
+            user_id=user.user_id, produce_timestamp=datetime.utcnow(), **delete_rating.model_dump()
         )
-        key = self._get_key(delete_rating, include_fields=['user_id', 'film_id', 'produce_timestamp'])
+        key = self._get_key(
+            delete_rating, include_fields=['user_id', 'film_id', 'produce_timestamp']
+        )
         message = self._get_message(delete_rating)
         await self.producer.send(self.topic, key, message)
 
@@ -68,20 +72,17 @@ class AverageRatingService(BaseService):
 
 
 @lru_cache()
-def get_rating_service(
-        producer: AbstractProducer = Depends(get_producer)
-) -> RatingService:
+def get_rating_service(producer: AbstractProducer = Depends(get_producer)) -> RatingService:
     return RatingService(producer=producer)
 
 
 @lru_cache()
 def get_delete_rating_service(
-        producer: AbstractProducer = Depends(get_producer)
+    producer: AbstractProducer = Depends(get_producer),
 ) -> DeleteRatingService:
     return DeleteRatingService(producer=producer)
 
 
 @lru_cache()
-def get_average_rating_service(
-) -> AverageRatingService:
+def get_average_rating_service() -> AverageRatingService:
     return AverageRatingService()

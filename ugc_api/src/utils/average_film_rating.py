@@ -21,7 +21,6 @@ class RatingCalculator(threading.Thread):
             pipeline = [{"$group": {"_id": "$film_id", "average_rating": {"$avg": "$rating"}}}]
             cursor = collection.aggregate(pipeline)
             for rating in cursor:
-                print(rating)
                 film_id = rating['_id']
                 average_rating = rating['average_rating']
                 self.send_to_kafka(film_id, average_rating)
@@ -29,7 +28,6 @@ class RatingCalculator(threading.Thread):
 
     def send_to_kafka(self, film_id, average_rating):
         message = {'film_id': film_id, 'average_rating': average_rating}
-        print(message)
         self.kafka_producer.send(
             self.kafka_topic, key=str(film_id).encode(), value=json.dumps(message).encode()
         )

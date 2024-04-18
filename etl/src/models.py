@@ -56,3 +56,32 @@ class RatingRmEvent(BaseModel):
 class AverageRating(BaseModel):
     film_id: str
     average_rating: float
+
+
+class WatchlistEvent(BaseModel):
+    film_id: str
+    in_watchlist: bool
+    user_id: str
+    produce_timestamp: datetime
+
+
+class WatchlistRmEvent(BaseModel):
+    film_id: str
+    user_id: str
+    produce_timestamp: datetime
+
+
+class ReviewsEvent(BaseModel):
+    film_id: str
+    review: str
+    name: str
+    review_timestamp: datetime
+    user_id: str
+    produce_timestamp: datetime
+
+
+class ReviewsRatingEvent(BaseModel):
+    review_id: str
+    rating: int
+    user_id: str
+    produce_timestamp: datetime

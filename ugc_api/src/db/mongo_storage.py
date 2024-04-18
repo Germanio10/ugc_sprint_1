@@ -5,7 +5,7 @@ from core.config import settings
 
 logger = logging.getLogger(__name__)
 
-mongo_client:  AsyncIOMotorClient | None = None
+mongo_client: AsyncIOMotorClient | None = None
 
 
 async def create_database() -> None:
@@ -20,6 +20,7 @@ async def create_database() -> None:
         if 'rating_info' not in await db.list_collection_names():
             collection = db['rating_info']
             await collection.create_index([('film_id', 1)], unique=True)
+            await db.create_collection('rating_info')
         logger.info('Connected to Mongo')
     except Exception as e:
         logger.exception(f"Error connecting to MongoDB: {e}")

@@ -2,9 +2,14 @@ from collections import defaultdict
 
 from models import RatingEvent
 
+from models import RatingEvent, ReviewsEvent, WatchlistEvent, ReviewsRatingEvent
+
 
 models = {
-    'rating': RatingEvent
+    'rating': RatingEvent,
+    'watchlist': WatchlistEvent,
+    'reviews': ReviewsEvent,
+    'reviews_rating': ReviewsRatingEvent,
 }
 
 
@@ -17,3 +22,4 @@ class Transformer:
                 if key in event:
                     del event[key]
             return event, len(events)
+        return event, len(events)

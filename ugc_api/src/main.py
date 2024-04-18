@@ -1,3 +1,5 @@
+import asyncio
+
 from contextlib import asynccontextmanager
 from aiokafka import AIOKafkaProducer
 from fastapi.applications import FastAPI
@@ -9,6 +11,7 @@ import uvicorn
 from core.logger import LOGGING
 from core.config import JWTSettings, settings
 from api.v1 import events, rating
+from api.v1 import events, watchlist, reviews, rating
 from db import kafka, mongo_storage
 from clients import api_session, admin_client_kafka
 from utils.average_film_rating import RatingCalculator
@@ -46,10 +49,20 @@ app = FastAPI(
 app.include_router(events.router, prefix='/api/v1', tags=['events'])
 app.include_router(rating.router, prefix='/api/v1', tags=['rating'])
 
+app.include_router(watchlist.router, prefix='/api/v1', tags=['watchlist'])
+app.include_router(reviews.router, prefix='/api/v1', tags=['reviews'])
 
 @AuthJWT.load_config
 def get_config():
     return JWTSettings()
+
+
+rating_calculator = RatingCalculator()
+
+
+async def run_rating_calculation():
+    while True:
+        await rating_calculator.calculate_average_rating()
 
 
 if __name__ == '__main__':

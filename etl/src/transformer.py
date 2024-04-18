@@ -1,6 +1,18 @@
 from collections import defaultdict
 
-from models import FilmQualityEvent, ClickInfoEvent, FilmProgressEvent, FilterEvent, LikeEvent, RatingRmEvent, AverageRating
+from models import (
+    FilmQualityEvent,
+    ClickInfoEvent,
+    FilmProgressEvent,
+    FilterEvent,
+    LikeEvent,
+    RatingRmEvent,
+    AverageRating,
+    WatchlistEvent,
+    ReviewsEvent,
+    WatchlistRmEvent,
+    ReviewsRatingEvent,
+)
 
 
 models = {
@@ -10,7 +22,11 @@ models = {
     'filter': FilterEvent,
     'rating': LikeEvent,
     'rating_rm': RatingRmEvent,
-    'average_rating': AverageRating
+    'average_rating': AverageRating,
+    'watchlist': WatchlistEvent,
+    'watchlist_rm': WatchlistRmEvent,
+    'reviews': ReviewsEvent,
+    'reviews_rating': ReviewsRatingEvent,
 }
 
 
