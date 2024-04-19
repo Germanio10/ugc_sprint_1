@@ -80,14 +80,6 @@ def get_config():
     return JWTSettings()
 
 
-rating_calculator = RatingCalculator()
-
-
-async def run_rating_calculation():
-    while True:
-        await rating_calculator.calculate_average_rating()
-
-
 if __name__ == '__main__':
 
     uvicorn.run(
