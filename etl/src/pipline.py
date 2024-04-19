@@ -23,5 +23,4 @@ class ETL:
             events, count = Transformer.transform(new_messages)
             self.loader.load(events)
             self.extractor.commit()
-            logger.debug('{} events was uploaded'.format(count))
-            print(f'{count} events was uploaded')
+            logger.info('{} events was uploaded'.format(count))

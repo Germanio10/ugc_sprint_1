@@ -1,0 +1,27 @@
+filebeat.inputs:
+- type: filestream
+  enabled: true
+  paths:
+    - /var/log/nginx/*
+  fields:
+    application: "nginx"
+
+- type: filestream
+  id: ugc_etl_clickhouse
+  enabled: true
+  paths:
+    - /src/etl/logs/*
+  fields:
+    application: "etl"
+
+- type: filestream
+  id: ugc_etl_mongo
+  enabled: true
+  paths:
+    - /src/kafka_to_mongo/logs/*
+  fields:
+    application: "etl"
+
+output.logstash:
+  enabled: true
+  hosts: ["logstash:5045"] 

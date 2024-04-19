@@ -15,6 +15,20 @@ services:
     networks:
       - my_network
 
+  ugc_nginx:
+    image: nginx:latest
+    container_name: ugc_nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx_config:/etc/nginx/conf.d:ro
+      - nginx_log:/var/log/nginx/
+    depends_on:
+      - ugc_api_service
+    ports:
+      - "83:83"
+    networks:
+      - my_network
+
   kafka-0:
     image: bitnami/kafka:3.4
     ports:
@@ -77,26 +91,33 @@ services:
     networks:
       - my_network
 
-  kafka-ui:
-    image: provectuslabs/kafka-ui:v0.7.0
-    ports:
-      - "8080:8080"
-    environment:
-      - KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS=kafka-0:9092
-      - KAFKA_CLUSTERS_0_NAME=kraft
-    networks:
-      - my_network
-
   etl:
     build: ./etl
     container_name: ugc_etl
     env_file:
       - .env
+    volumes:
+      - etl_log:/src/etl/logs
     depends_on:
       - kafka-0
       - kafka-1
       - kafka-2
       - clickhouse-node1
+    networks:
+      - my_network
+
+  kafka_to_mongo:
+    build: ./kafka_to_mongo
+    container_name: kafka_to_mongo
+    env_file:
+      - .env
+    volumes:
+      - mongo_etl_log:/src/kafka_to_mongo/logs
+    depends_on:
+      - kafka-0
+      - kafka-1
+      - kafka-2
+      - mongo_db
     networks:
       - my_network
 
@@ -163,6 +184,14 @@ services:
     networks:
       - my_network
 
+  mongo_db:
+    image: mongo
+    ports:
+      - "27017:27017"
+    restart: unless-stopped
+    networks:
+      - my_network
+
   ugc_tests:
     build: ./tests/functional
     container_name: ugc_tests
@@ -176,10 +205,26 @@ services:
     networks:
       - my_network
 
+  filebeat:
+    image: elastic/filebeat:8.13.2
+    volumes:
+      - nginx_log:/var/log/nginx:ro
+      - etl_log:/src/etl/logs:ro
+      - mongo_etl_log:/src/kafka_to_mongo/logs:ro
+      - ./elk-deploy/filebeat.yml:/usr/share/filebeat/filebeat.yml
+    depends_on:
+      - ugc_nginx
+    command: ["--strict.perms=false"]
+    networks:
+    - my_network
+
 volumes:
   kafka_0_data:
   kafka_1_data:
   kafka_2_data:
+  etl_log:
+  nginx_log:
+  mongo_etl_log:
 
 networks:
   my_network:

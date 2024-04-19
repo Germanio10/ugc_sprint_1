@@ -18,9 +18,13 @@ aiokafka = "^0.8.1"
 orjson = "^3.9.15"
 aiohttp = "^3.9.3"
 async-fastapi-jwt-auth = "^0.6.4"
+asyncio="^3.4.3"
 pytest = "^7.4.4"
 pytest-asyncio = "^0.12.0"
 pydantic = "^2.1.1"
+motor = "^3.4.0"
+schedule = "^0.4.3"
+sentry-sdk = {extras = ["fastapi"], version = "^1.45.0"}
 
 
 [build-system]

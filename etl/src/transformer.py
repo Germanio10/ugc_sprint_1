@@ -1,6 +1,18 @@
 from collections import defaultdict
 
-from models import FilmQualityEvent, ClickInfoEvent, FilmProgressEvent, FilterEvent
+from models import (
+    FilmQualityEvent,
+    ClickInfoEvent,
+    FilmProgressEvent,
+    FilterEvent,
+    LikeEvent,
+    RatingRmEvent,
+    AverageRating,
+    WatchlistEvent,
+    ReviewsEvent,
+    WatchlistRmEvent,
+    ReviewsRatingEvent,
+)
 
 
 models = {
@@ -8,6 +20,13 @@ models = {
     'click_info': ClickInfoEvent,
     'progress': FilmProgressEvent,
     'filter': FilterEvent,
+    'rating': LikeEvent,
+    'rating_rm': RatingRmEvent,
+    'average_rating': AverageRating,
+    'watchlist': WatchlistEvent,
+    'watchlist_rm': WatchlistRmEvent,
+    'reviews': ReviewsEvent,
+    'reviews_rating': ReviewsRatingEvent,
 }
 
 
@@ -17,6 +36,9 @@ class Transformer:
     def transform(events: list) -> tuple[dict, int]:
         results = defaultdict(list)
         for event in events:
-            event_type = event.pop('event_type')
-            results[event_type].append(models[event_type](**event))
+            if 'event_type' in event:
+                event_type = event.pop('event_type')
+                results[event_type].append(models[event_type](**event))
+            else:
+                results['average_rating'].append(models['average_rating'](**event))
         return results, len(events)

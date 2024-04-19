@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from dotenv import load_dotenv
-from pydantic import Field
+from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -20,26 +20,21 @@ class TestKafkaSettings(BaseSettings):
         return self.kafka_hosts.split(',')
 
 
-class TestAuthServiceSettings(BaseSettings):
-    host: str = Field(validation_alias='FASTAPI_AUTH_HOST')
-    port: int = Field(validation_alias='FASTAPI_AUTH_PORT')
-
-    def url(self):
-        return f'http://{self.host}:{self.port}/api/v1'
-
-
 class TestUGCServiceSettings(BaseSettings):
-    host: str = Field(validation_alias='FASTAPI_UGC_HOST')
-    port: int = Field(validation_alias='FASTAPI_UGC_PORT')
+    host: str = Field(validation_alias='FASTAPI_UGC_HOST', default='localhost')
+    port: int = Field(validation_alias='FASTAPI_UGC_PORT', default=8000)
 
     def url(self):
         return f'http://{self.host}:{self.port}/api/v1'
+
+
+class JWTSettings(BaseModel):
+    authjwt_secret_key: str = "secret"
 
 
 class TestSettings(BaseSettings):
     kafka: TestKafkaSettings = TestKafkaSettings()
-    auth_service: TestAuthServiceSettings = TestAuthServiceSettings()
     ugc_service: TestUGCServiceSettings = TestUGCServiceSettings()
 
 
-settings = TestSettings()
+test_settings = TestSettings()

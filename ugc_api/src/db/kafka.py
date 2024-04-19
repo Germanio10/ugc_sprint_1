@@ -1,6 +1,5 @@
 from aiokafka import AIOKafkaProducer
 
-
 kafka: AIOKafkaProducer | None = None
 
 
