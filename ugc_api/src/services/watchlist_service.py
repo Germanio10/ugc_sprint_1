@@ -1,13 +1,17 @@
 from datetime import datetime
-from services.base_service import BaseService
-from producers.abstract_producer import AbstractProducer, AbstractSortProducer
-from producers.mongo_producer import get_mongo_producer
-
-from models.watchlist import WatchlistEventDTO, WatchlistProduceEventDTO, DeleteWatchlistEventDTO
-from fastapi import Depends
 from functools import lru_cache
-from producers.kafka_producer import get_producer
+
+from fastapi import Depends
 from models.user import User
+from models.watchlist import (
+    DeleteWatchlistEventDTO,
+    WatchlistEventDTO,
+    WatchlistProduceEventDTO,
+)
+from producers.abstract_producer import AbstractProducer, AbstractSortProducer
+from producers.kafka_producer import get_producer
+from producers.mongo_producer import get_mongo_producer
+from services.base_service import BaseService
 
 
 class AddToWatchlistService(BaseService):
@@ -23,11 +27,12 @@ class AddToWatchlistService(BaseService):
             produce_timestamp=datetime.now(),
             **watchlist.model_dump(),
         )
-        key = self._get_key( watchlist, include_fields=['user_id', 'film_id', 'produce_timestamp'])
+        key = self._get_key(watchlist, include_fields=['user_id', 'film_id', 'produce_timestamp'])
         message = self._get_message(watchlist)
         await self.producer.send(self.topic, key, message)
 
         return watchlist
+
 
 class RemoveFromWatchlistService(BaseService):
 
@@ -41,11 +46,12 @@ class RemoveFromWatchlistService(BaseService):
             produce_timestamp=datetime.now(),
             **watchlist.model_dump(),
         )
-        key = self._get_key( watchlist, include_fields=['user_id', 'film_id', 'produce_timestamp'])
+        key = self._get_key(watchlist, include_fields=['user_id', 'film_id', 'produce_timestamp'])
         message = self._get_message(watchlist)
         await self.producer.send(self.topic, key, message)
 
         return watchlist
+
 
 class GetWatchlistService(BaseService):
 
@@ -54,24 +60,25 @@ class GetWatchlistService(BaseService):
         self.collection = 'watchlist'
 
     async def execute(self, user: User) -> list[WatchlistEventDTO]:
-        watchlist = await self.producer.get(self.collection, user.user_id, WatchlistEventDTO)
+        return await self.producer.get(self.collection, user.user_id, WatchlistEventDTO)
 
-        return watchlist
 
 @lru_cache()
 def add_to_watchlist_service(
-        producer: AbstractProducer = Depends(get_producer),
+    producer: AbstractProducer = Depends(get_producer),
 ) -> AddToWatchlistService:
     return AddToWatchlistService(producer=producer)
 
+
 @lru_cache()
 def remove_from_watchlist_service(
-        producer: AbstractProducer = Depends(get_producer),
+    producer: AbstractProducer = Depends(get_producer),
 ) -> RemoveFromWatchlistService:
     return RemoveFromWatchlistService(producer=producer)
 
+
 @lru_cache()
 def get_wathlist_service(
-        producer: AbstractSortProducer = Depends(get_mongo_producer),
+    producer: AbstractSortProducer = Depends(get_mongo_producer),
 ) -> GetWatchlistService:
     return GetWatchlistService(producer=producer)

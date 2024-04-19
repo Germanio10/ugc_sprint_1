@@ -1,12 +1,9 @@
 import time
 
-from transformer import Transformer
 from extractor import Extractor
 from loader import Loader
 from logger import logger
-
-
-STATE_KEY = 'last_produce_time'
+from transformer import Transformer
 
 
 class ETL:
@@ -23,5 +20,4 @@ class ETL:
             data, count = Transformer.transform(new_messages)
             self.loader.load(data)
             self.extractor.commit()
-            logger.debug('{} data was uploaded'.format(count))
-            print(f'{count} data was uploaded')
+            logger.info('{} data was uploaded'.format(count))

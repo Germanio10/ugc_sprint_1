@@ -2,7 +2,7 @@ from datetime import datetime
 from functools import lru_cache
 
 from core.config import settings
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from models.rating import (
     AverageRating,
     RatingDeleteInfoEventDTO,
@@ -11,9 +11,6 @@ from models.rating import (
     RatingInfoProduceEventDTO,
 )
 from models.user import User
-from fastapi import Depends, HTTPException, status
-from pymongo import MongoClient
-
 from producers.abstract_producer import AbstractProducer
 from producers.kafka_producer import get_producer
 from pymongo import MongoClient
@@ -28,7 +25,9 @@ class RatingService(BaseService):
     async def execute(self, rating: RatingInfoEventDTO, user: User) -> RatingInfoProduceEventDTO:
 
         rating = RatingInfoProduceEventDTO(
-            user_id=user.user_id, produce_timestamp=datetime.utcnow(), **rating.model_dump()
+            user_id=user.user_id,
+            produce_timestamp=datetime.utcnow(),
+            **rating.model_dump(),
         )
         key = self._get_key(rating, include_fields=['user_id', 'film_id', 'produce_timestamp'])
         message = self._get_message(rating)
@@ -43,14 +42,19 @@ class DeleteRatingService(BaseService):  ### Убрать дублировани
         self.topic = 'mongo'
 
     async def execute(
-        self, delete_rating: RatingDeleteInfoEventDTO, user: User
+        self,
+        delete_rating: RatingDeleteInfoEventDTO,
+        user: User,
     ) -> RatingDeleteProduceEventDTO:
 
         delete_rating = RatingDeleteProduceEventDTO(
-            user_id=user.user_id, produce_timestamp=datetime.utcnow(), **delete_rating.model_dump()
+            user_id=user.user_id,
+            produce_timestamp=datetime.utcnow(),
+            **delete_rating.model_dump(),
         )
         key = self._get_key(
-            delete_rating, include_fields=['user_id', 'film_id', 'produce_timestamp']
+            delete_rating,
+            include_fields=['user_id', 'film_id', 'produce_timestamp'],
         )
         message = self._get_message(delete_rating)
         await self.producer.send(self.topic, key, message)
@@ -71,7 +75,8 @@ class AverageRatingService(BaseService):
         document = collection.find_one({'film_id': film_id})
         if not document:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail='У этого фильма нет оценок'
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='У этого фильма нет оценок',
             )
         average_rating = document['average_rating']
         return AverageRating(average_rating=average_rating)

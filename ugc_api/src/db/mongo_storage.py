@@ -1,7 +1,7 @@
 import logging
 
-from motor.motor_asyncio import AsyncIOMotorClient
 from core.config import settings
+from motor.motor_asyncio import AsyncIOMotorClient
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ async def create_database() -> None:
         if 'reviews_rating' not in await db.list_collection_names():
             collection = db['reviews_rating']
             await collection.create_index([('review_id', 1), ('user_id', 1)], unique=True)
-        
+
         logger.info('Connected to Mongo')
     except Exception as e:
         logger.exception(f"Error connecting to MongoDB: {e}")

@@ -1,3 +1,4 @@
+from logger import logger
 from pymongo.errors import DuplicateKeyError
 
 
@@ -52,4 +53,4 @@ class Loader:
                     upsert=True,
                 )
         except DuplicateKeyError:
-            print('Нельзя ставить дважды одинаковую оценку')
+            logger.warning('{} duplicate key')

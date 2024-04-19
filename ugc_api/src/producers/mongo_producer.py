@@ -1,15 +1,13 @@
 from functools import lru_cache
-from motor.motor_asyncio import AsyncIOMotorClient
-from pymongo import ASCENDING, DESCENDING
-
-from fastapi import Depends
-from core.config import settings
-
-
-from producers.abstract_producer import AbstractSortProducer
 from typing import List, Type, TypeVar
 
+from core.config import settings
+from motor.motor_asyncio import AsyncIOMotorClient
+from producers.abstract_producer import AbstractSortProducer
+from pymongo import ASCENDING, DESCENDING
+
 T = TypeVar("T")
+
 
 class MongoProducer(AbstractSortProducer):
 
@@ -19,16 +17,22 @@ class MongoProducer(AbstractSortProducer):
 
     async def get(self, collection: str, user_id: str, model: Type[T]) -> List[T]:
         query = {"user_id": user_id}
-        
+
         documents = []
         async for document in self.db[collection].find(query):
             obj = model(**document)
             documents.append(obj)
         return documents
-    
-    async def get_sorted(self, collection: str, model: Type[T], field: str, ascending: bool = True) -> List[T]:
+
+    async def get_sorted(
+        self,
+        collection: str,
+        model: Type[T],
+        field: str,
+        ascending: bool = True,
+    ) -> List[T]:
         sort_order = ASCENDING if ascending else DESCENDING
-        
+
         documents = []
         async for document in self.db[collection].find().sort(field, sort_order):
             obj = model(**document)
@@ -37,6 +41,5 @@ class MongoProducer(AbstractSortProducer):
 
 
 @lru_cache()
-def get_mongo_producer(
-) -> AbstractSortProducer:
+def get_mongo_producer() -> AbstractSortProducer:
     return MongoProducer()

@@ -1,6 +1,6 @@
 import logging
 
-from pydantic import Field, BaseModel
+from pydantic import BaseModel, Field
 from pydantic_settings import BaseSettings
 
 
@@ -23,9 +23,15 @@ class MongoSettings(BaseSettings):
 
 class Settings(BaseSettings):
     kafka: KafkaSettings = KafkaSettings()
-    films_api_base_url: str = Field(validation_alias='FILMS_API_BASE_URL', default='http://127.0.0.1:81')
     mongo: MongoSettings = MongoSettings()
+    films_api_base_url: str = Field(
+        validation_alias='FILMS_API_BASE_URL',
+        default='http://127.0.0.1:81',
+    )
     log_level: int | str = Field(validation_alias='LOG_LEVEL', default=logging.DEBUG)
+    sentry_dsn: str = Field(validation_alias='SENTRY_DSN', default='')
+    is_debug: bool = Field(validation_alias='DEBUG', default=False)
+    is_tests: bool = Field(validation_alias='TESTS', default=False)
 
 
 settings = Settings()

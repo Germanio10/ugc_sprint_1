@@ -1,14 +1,3 @@
-from models import RatingEvent, ReviewsEvent, WatchlistEvent, ReviewsRatingEvent
-
-
-models = {
-    'rating': RatingEvent,
-    'watchlist': WatchlistEvent,
-    'reviews': ReviewsEvent,
-    'reviews_rating': ReviewsRatingEvent,
-}
-
-
 class Transformer:
 
     @staticmethod

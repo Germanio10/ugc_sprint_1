@@ -6,6 +6,9 @@ poetry.lock
 
 *.pyc
 *.pyo
+*.html
+*.css
+*.svg
 
 .pytest_cache
 .mypy_cache

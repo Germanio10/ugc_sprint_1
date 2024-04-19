@@ -1,13 +1,12 @@
 from functools import lru_cache
-from aiokafka import AIOKafkaProducer
-from fastapi import Depends
 
-from producers.abstract_producer import AbstractProducer
+from aiokafka import AIOKafkaProducer
 from db.kafka import get_kafka
+from fastapi import Depends
+from producers.abstract_producer import AbstractProducer
 
 
 class KafkaProducer(AbstractProducer):
-
     def __init__(self, producer: AIOKafkaProducer) -> None:
         self.producer = producer
 

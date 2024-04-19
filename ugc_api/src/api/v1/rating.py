@@ -62,5 +62,4 @@ async def average_rating(
     result = await service.get_average_rating(film_id=film_id, user=user)
     if result:
         return result
-    else:
-        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail='На этот фильм нет отзывов')
+    raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail='На этот фильм нет отзывов')

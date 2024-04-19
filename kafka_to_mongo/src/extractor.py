@@ -1,19 +1,18 @@
-import backoff
-
-from kafka import KafkaConsumer, errors
-
-from logger import logger
-
-
 import json
+
+import backoff
+from kafka import KafkaConsumer, errors
+from logger import logger
 
 
 class Extractor:
     def __init__(self, consumer: KafkaConsumer):
         self.consumer = consumer
 
-    @backoff.on_exception(backoff.expo, (errors.KafkaTimeoutError, errors.KafkaConnectionError,
-                                         errors.KafkaConfigurationError))
+    @backoff.on_exception(
+        backoff.expo,
+        (errors.KafkaTimeoutError, errors.KafkaConnectionError, errors.KafkaConfigurationError),
+    )
     def extract(self) -> list[dict]:
         messages = []
         records = self.consumer.poll(10.0)

@@ -1,11 +1,9 @@
-from kafka import KafkaConsumer
-from pymongo import MongoClient
-
-from loader import Loader
-from extractor import Extractor
-from pipline import ETL
 from config import settings
-
+from extractor import Extractor
+from kafka import KafkaConsumer
+from loader import Loader
+from pipline import ETL
+from pymongo import MongoClient
 
 if __name__ == '__main__':
     consumer = KafkaConsumer(
