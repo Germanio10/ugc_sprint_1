@@ -170,7 +170,7 @@ class Clickhouse:
             '''
             CREATE TABLE IF NOT EXISTS ugc.reviews_rating ON CLUSTER company_cluster
                 (
-                    review_id UUID,
+                    review_id str,
                     rating Int32,
                     user_id UUID,
                     produce_timestamp DateTime64(6, 'Asia/Istanbul')

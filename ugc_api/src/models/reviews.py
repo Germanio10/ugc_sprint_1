@@ -30,7 +30,7 @@ class ReviewsProduceEventDTO(ReviewsEventDTO):
 
 
 class RatingInfoEventDTO(BaseModel):
-    review_id: UUID
+    review_id: str
     rating: int
 
 

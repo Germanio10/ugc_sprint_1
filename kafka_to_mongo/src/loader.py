@@ -1,4 +1,5 @@
 from logger import logger
+from bson.objectid import ObjectId
 from pymongo.errors import DuplicateKeyError
 
 
@@ -33,7 +34,7 @@ class Loader:
                 )
             elif data.get('event_type') == 'reviews_rating':
                 self.reviews_rating_collection.update_one(
-                    {'review_id': data['review_id'], 'user_id': data['user_id']},
+                    {'review_id': ObjectId(data['review_id']), 'user_id': data['user_id']},
                     {'$set': data},
                     upsert=True,
                 )
